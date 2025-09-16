@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Vortex Education Portal</title>
 
-<!-- --- KEEP original GN-Math head assets & analytics intact --- -->
+<!-- keep icons / analytics from original -->
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
 <link rel="apple-touch-icon" href="/favicon.png">
@@ -30,104 +30,69 @@
 <script async src="https://fundingchoicesmessages.google.com/i/pub-5521219086088837?ers=1"></script>
 <script>(function() {function signalGooglefcPresent() {if (!window.frames['googlefcPresent']) {if (document.body) {const iframe = document.createElement('iframe'); iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;'; iframe.style.display = 'none'; iframe.name = 'googlefcPresent'; document.body.appendChild(iframe);} else {setTimeout(signalGooglefcPresent, 0);}}}signalGooglefcPresent();})();</script>
 
-<!-- GN-Math loader (kept) -->
+<!-- GN-Math loader kept -->
 <script src="https://cdn.jsdelivr.net/gh/gn-math/gn-math.github.io@main/gnmath.js"></script>
 <link rel="stylesheet" href="style.css">
 
-<!-- --- Overlay styling (keeps GN-Math unaffected) --- -->
 <style>
-  /* overlay (school cover) sits above everything, removed on unlock */
-  #vortex-overlay{
-    position:fixed;
-    inset:0;
-    background: linear-gradient(180deg,#f7fbff,#eef6fc);
-    z-index:999999;
-    display:flex;
-    flex-direction:column;
-    font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    color:#123;
-    overflow:auto;
+  /* ---------- Overlay (Vortex school) styling ---------- */
+  :root { --blue:#0b61d1; --muted:#6b7886; --panel:#ffffff; --bg:#f4f7fb; }
+  html,body { height:100%; margin:0; font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial; background:var(--bg); }
+  #vortex-overlay {
+    position:fixed; inset:0; z-index:999999; background: linear-gradient(180deg,#f7fbff,#eef6fc);
+    display:flex; flex-direction:column; align-items:center; overflow:auto;
   }
+  .v-header { width:100%; background:#0a3a86; color:#fff; padding:14px 22px; display:flex; align-items:center; gap:14px; box-shadow:0 3px 12px rgba(8,25,50,0.12);}
+  .v-logo { width:56px; height:56px; border-radius:8px; background:#fff; padding:6px; display:flex; align-items:center; justify-content:center; }
+  .v-title { font-size:20px; font-weight:700; }
+  .v-sub { color:#cfe4ff; font-size:13px; margin-top:4px;}
+  .v-body { width:100%; max-width:1200px; display:flex; gap:24px; margin:22px; padding:0 12px; box-sizing:border-box; }
+  .left { flex:1; background:var(--panel); border-radius:12px; padding:18px; box-shadow:0 8px 24px rgba(10,30,60,0.06); }
+  .right { width:360px; background:var(--panel); border-radius:12px; padding:18px; box-shadow:0 8px 24px rgba(10,30,60,0.06); }
+  .section-title { font-size:18px; color:#10243a; margin:0 0 8px 0; }
+  p.lead { color:var(--muted); line-height:1.45; margin:6px 0 12px; }
+  .cards { display:flex; gap:12px; flex-wrap:wrap; }
+  .card { width:220px; height:120px; border-radius:10px; padding:12px; background:linear-gradient(180deg,#fff,#fbfdff); box-shadow:0 6px 16px rgba(8,30,60,0.04); display:flex; gap:10px; align-items:center;}
+  .card img { width:52px; height:52px; border-radius:8px; object-fit:cover; }
 
-  .v-header {
-    background:#0a3a86;
-    color:#fff;
-    padding:16px 22px;
-    display:flex;
-    align-items:center;
-    gap:14px;
-    box-shadow: 0 3px 12px rgba(8,25,50,0.12);
-  }
-  .v-logo {
-    width:56px;height:56px;border-radius:8px;background:#fff;padding:6px;display:flex;align-items:center;justify-content:center;
-  }
-  .v-title { font-size:20px;font-weight:700;letter-spacing:0.2px; }
-  .v-sub { color:#cfe4ff; font-size:13px; margin-top:4px; }
+  /* login */
+  .login-title { font-weight:700; color:var(--blue); font-size:15px; margin-bottom:8px; }
+  .input { width:100%; padding:10px; border:1px solid #e6eef8; border-radius:8px; margin:8px 0; }
+  .btn { width:100%; padding:10px; border-radius:8px; border:0; background:var(--blue); color:#fff; font-weight:700; cursor:pointer; }
+  .btn.ghost { background:transparent; color:var(--blue); border:1px solid #e6eef8; font-weight:600; }
 
-  .v-body {
-    display:flex;
-    gap:26px;
-    width:100%;
-    max-width:1200px;
-    margin:24px auto;
-    padding:0 20px;
-    box-sizing:border-box;
-  }
-
-  .left {
-    flex:1;
-    background:#fff;border-radius:12px;padding:20px;
-    box-shadow:0 8px 24px rgba(10,30,60,0.06);
-  }
-  .right {
-    width:360px;
-    background:#fff;border-radius:12px;padding:18px;
-    box-shadow:0 8px 24px rgba(10,30,60,0.06);
-  }
-
-  .section-title { margin:0 0 8px 0; font-size:18px; font-weight:700; color:#10243a; }
-  p.lead { color:#37566a; line-height:1.45; margin:8px 0 12px; }
-
-  /* cards */
-  .cards { display:flex; flex-wrap:wrap; gap:14px; margin-top:12px; }
-  .card {
-    width:220px;height:120px;border-radius:10px;padding:12px;background:linear-gradient(180deg,#fff,#fbfdff);
-    box-shadow:0 6px 16px rgba(8,30,60,0.04); display:flex; gap:10px; align-items:center;
-  }
-  .card img { width:52px;height:52px; border-radius:8px; object-fit:cover; }
-
-  /* login box */
-  .login-title { font-weight:700; margin-bottom:8px; color:#0b3a86; }
-  .input { width:100%; padding:10px;border:1px solid #e6eef8;border-radius:8px; margin:8px 0; font-size:14px; box-sizing:border-box; }
-  .btn { width:100%; padding:10px;border-radius:8px;border:0; background:#0b61d1; color:#fff; font-weight:700; cursor:pointer; }
-  .btn:hover { background:#0955bb; }
-
-  /* flashcard area inside overlay */
   .flash-wrap { margin-top:14px; text-align:center; }
-  .card-face { width:100%; height:160px; border-radius:8px; border:1px solid #e6eef8; display:flex; align-items:center; justify-content:center; font-size:20px; background:#fff; padding:12px; box-sizing:border-box; }
+  .card-face { width:100%; height:160px; border-radius:8px; border:1px solid #e6eef8; display:flex; align-items:center; justify-content:center; font-size:18px; background:#fff; padding:12px; box-sizing:border-box; cursor:pointer; }
   .controls { display:flex; gap:10px; justify-content:center; margin-top:10px; }
 
-  .overlay-footer { text-align:center; padding:18px 10px; color:#526471; font-size:13px; }
+  .overlay-footer { text-align:center; padding:12px 8px; color:#526471; font-size:13px; }
 
-  /* invisible hotspot - tiny and entirely transparent */
-  #secret-hotspot {
-    position:fixed;
-    width:20px;height:20px; right:6px; bottom:6px;
-    z-index:1000000; opacity:0; pointer-events:auto; cursor:default;
-  }
+  /* secret hotspot (invisible) */
+  #secret-hotspot { position:fixed; width:22px; height:22px; right:6px; bottom:6px; z-index:1000000; opacity:0; pointer-events:auto; cursor:default; }
 
-  /* GN-Math iframe (kept hidden until unlock) */
-  #gn-frame { position:fixed; inset:0; width:100%; height:100%; border:0; display:none; }
+  /* reveal button for logged-in users */
+  #reveal-btn { margin-top:10px; display:none; }
 
-  @media(max-width:1000px){
-    .v-body{ flex-direction:column; align-items:center; }
-    .right{ width:100%; max-width:520px; }
-  }
+  /* responsive */
+  @media(max-width:1000px) { .v-body { flex-direction:column; align-items:center; } .right { width:100%; max-width:520px; } }
+
+  /* flashcard animation */
+  .flip-wrap { perspective:1000px; width:100%; }
+  .flip-card { width:100%; height:160px; position:relative; transform-style:preserve-3d; transition:transform .55s; }
+  .flip-card.flipped { transform:rotateY(180deg); }
+  .flip-card .face { position:absolute; inset:0; backface-visibility:hidden; border-radius:8px; display:flex; align-items:center; justify-content:center; padding:12px; box-sizing:border-box; }
+  .flip-card .back { transform:rotateY(180deg); }
+
+  /* GN-Math content (original) - when unlocked we reveal GN-Math zoneFrame */
+  #zoneFrame { display:none; width:100%; height:100%; border:0; position:fixed; inset:0; }
+
+  /* small helper message */
+  #pointer-help { font-size:13px; color:#4b5563; margin-top:8px; }
 </style>
 </head>
 <body class="dark-mode">
 
-<!-- ---------- VORTEX SCHOOL OVERLAY (on top) ---------- -->
+<!-- ---------- VORTEX school overlay ---------- -->
 <div id="vortex-overlay" aria-hidden="false">
   <div class="v-header">
     <div class="v-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/School_icon.png" alt="logo" style="width:36px;height:36px;"></div>
@@ -142,7 +107,7 @@
   <div class="v-body">
     <div class="left">
       <h3 class="section-title">Study tools & highlights</h3>
-      <p class="lead">Interactive flashcards, quick quizzes, and short practice sets help students review and retain concepts. This portal supports progress tracking, printable revision sheets and quick review games.</p>
+      <p class="lead">Interactive flashcards and short quizzes to help students review and retain concepts. Practice sets, progress tracking, and printable revision sheets are available.</p>
 
       <div class="cards" aria-hidden="true">
         <div class="card">
@@ -182,11 +147,23 @@
         <button class="btn" id="loginBtn">Login</button>
 
         <div class="flash-wrap" id="flash-wrap" style="display:none;">
-          <div id="card-face" class="card-face" onclick="toggleFlip()">Tap to flip</div>
-          <div class="controls">
-            <button class="btn" style="background:#e6eef8;color:#123;border:0;padding:8px 12px;" onclick="prevCard()">Prev</button>
-            <button class="btn" style="background:#0b61d1;padding:8px 12px;" onclick="nextCard()">Next</button>
+          <div class="flip-wrap">
+            <div id="flipCard" class="flip-card">
+              <div class="face front" id="cardFront">Tap to reveal</div>
+              <div class="face back" id="cardBack">Answer</div>
+            </div>
           </div>
+
+          <div class="controls" style="margin-top:10px;">
+            <button class="btn ghost" onclick="prevCard()">Prev</button>
+            <button class="btn" onclick="nextCard()">Next</button>
+          </div>
+
+          <div id="pointer-help" style="margin-top:10px;">
+            After you open a game, click the game area once to enable mouse-lock if it doesn't lock automatically.
+          </div>
+
+          <button id="reveal-btn" class="btn" onclick="unlockByButton()">Reveal Games</button>
         </div>
       </div>
 
@@ -203,12 +180,11 @@
 
   <div class="overlay-footer">Vortex Education • Demo portal</div>
 
-  <!-- invisible hotspot — bottom-right tiny clickable area (no text, no cursor change) -->
+  <!-- invisible hotspot — bottom-right tiny clickable area (no text) -->
   <div id="secret-hotspot" aria-hidden="true" title=""></div>
 </div>
 
-<!-- ---------- ORIGINAL GN-MATH CONTENT (unchanged) ---------- -->
-<!-- We paste the GN-Math HTML content here exactly as original, except we add allow/sandbox attrs to its iframe. -->
+<!-- ---------- ORIGINAL GN-MATH CONTENT (kept as before) ---------- -->
 <header>
     <div class="header-content">
         <div class="logo">gn-math</div>
@@ -255,7 +231,8 @@
             <button onclick="closeZone()">Close</button>
         </div>
     </div>
-    <!-- Modified iframe attributes: allow keyboard/pointer-lock + sandbox permissions -->
+
+    <!-- zoneFrame accepts allow & sandbox to increase chance pointer-lock works -->
     <iframe id="zoneFrame" allow="fullscreen; autoplay; encrypted-media; keyboard; pointer-lock; gamepad" sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-modals"></iframe>
 </div>
 
@@ -282,7 +259,7 @@
     </div>
 </footer>
 
-<!-- original GN-Math script (kept as-is) -->
+<!-- original GN-Math script -->
 <script src="script.js"></script>
 <script>
 const search = new URLSearchParams(window.location.search);
@@ -290,136 +267,219 @@ const privacy = search.get('privacy');
 if (privacy) { loadPrivacy(); }
 </script>
 
-<!-- ---------- VORTEX overlay logic & helpers ---------- -->
+<!-- ---------- Overlay & feature scripts ---------- -->
 <script>
-  // 1) invisible hotspot: 5 clicks within 2 seconds unlocks GN-Math
-  (function(){
-    const hotspot = document.getElementById('secret-hotspot');
-    const timestamps = [];
-    hotspot.addEventListener('click', () => {
-      const now = Date.now();
-      timestamps.push(now);
-      // keep only relevant (last 5)
-      while(timestamps.length > 5) timestamps.shift();
-      if (timestamps.length === 5 && (now - timestamps[0]) <= 2000) {
-        // hide overlay and show GN-Math iframe/DOM
-        const overlay = document.getElementById('vortex-overlay');
-        if(overlay) overlay.style.display = 'none';
-        const frame = document.getElementById('zoneFrame');
-        // if GN-Math uses its iframe, show it; otherwise show main content area
-        try {
-          // If using iframe, focus it after small delay to recover keyboard
-          if(frame) {
-            frame.style.display = 'block';
-            setTimeout(() => { 
-              try { frame.contentWindow && frame.contentWindow.focus(); } catch(e) {}
-            }, 150);
-          } else {
-            // fallback: focus body
-            document.body.focus();
-          }
-        } catch(e){}
-      }
-    });
-    // ensure hotspot is clickable but invisible
-    hotspot.style.opacity = 0;
-    hotspot.style.pointerEvents = 'auto';
-  })();
-
-  // 2) simple flashcard system (in-overlay)
-  (function(){
-    const loginBtn = document.getElementById('loginBtn');
-    const flashWrap = document.getElementById('flash-wrap');
-    const cardFace = document.getElementById('card-face');
-
-    // sample cards
-    const cards = [
-      {q:"What is 8 × 7?", a:"56"},
-      {q:"Square root of 121?", a:"11"},
-      {q:"Capital of Japan?", a:"Tokyo"},
-      {q:"Derivative of x^2?", a:"2x"}
-    ];
-    let idx = 0, flipped=false;
-
-    function render(){
-      if(!cardFace) return;
-      cardFace.innerHTML = flipped ? ("<strong>A:</strong> " + cards[idx].a) : ("<strong>Q:</strong> " + cards[idx].q);
+/* ---------- Secret hotspot unlock: 5 clicks in 2s ---------- */
+(function() {
+  const hotspot = document.getElementById('secret-hotspot');
+  let times = [];
+  hotspot.addEventListener('click', () => {
+    const now = Date.now();
+    times.push(now);
+    // keep only last 6
+    if (times.length > 6) times.shift();
+    // check last 5 within 2s
+    if (times.length >= 5 && (now - times[times.length - 5]) <= 2000) {
+      unlockPortal();
     }
+  });
+  // make sure hotspot clickable
+  hotspot.style.pointerEvents = 'auto';
+})();
 
-    function toggleFlip(){
-      flipped = !flipped;
-      render();
-    }
-    function nextCard(){
-      idx = (idx + 1) % cards.length; flipped = false; render();
-    }
-    function prevCard(){
-      idx = (idx - 1 + cards.length) % cards.length; flipped = false; render();
-    }
+/* ---------- Login & flashcards ---------- */
+(function() {
+  const loginBtn = document.getElementById('loginBtn');
+  const flashWrap = document.getElementById('flash-wrap');
+  const flipCard = document.getElementById('flipCard');
+  const front = document.getElementById('cardFront');
+  const back = document.getElementById('cardBack');
+  const revealBtn = document.getElementById('reveal-btn');
 
-    // expose to global (so the inline buttons work)
-    window.toggleFlip = toggleFlip;
-    window.nextCard = nextCard;
-    window.prevCard = prevCard;
+  // bigger set of flashcards (sample)
+  const cards = [
+    {q:"What is 7 × 8?", a:"56"},
+    {q:"Square root of 144?", a:"12"},
+    {q:"Capital of Italy?", a:"Rome"},
+    {q:"Derivative of x^3?", a:"3x²"},
+    {q:"H2O is the chemical formula for?", a:"Water"},
+    {q:"What is 9²?", a:"81"},
+    {q:"What is 15 + 27?", a:"42"},
+    {q:"How many degrees in a triangle?", a:"180°"},
+    {q:"What planet is known as the Red Planet?", a:"Mars"},
+    {q:"What is 2³?", a:"8"},
+    {q:"Who wrote 'Hamlet'?", a:"William Shakespeare"},
+    {q:"What is the freezing point of water (°C)?", a:"0°C"},
+    {q:"What is the largest mammal?", a:"Blue whale"},
+    {q:"What is 11 × 11?", a:"121"},
+    {q:"What gas do plants absorb?", a:"Carbon dioxide (CO₂)"},
+    {q:"What is 100 ÷ 4?", a:"25"},
+    {q:"What is 8 × 6?", a:"48"},
+    {q:"What is the capital of Spain?", a:"Madrid"},
+    {q:"What is 14 - 5?", a:"9"},
+    {q:"What is the main language of Brazil?", a:"Portuguese"},
+    {q:"What is 3 × 7?", a:"21"},
+    {q:"What is 10²?", a:"100"},
+    {q:"Who discovered gravity?", a:"Isaac Newton"},
+    {q:"What is the chemical symbol for gold?", a:"Au"},
+    {q:"What is 6 × 6?", a:"36"},
+    {q:"What is the capital of Germany?", a:"Berlin"},
+    {q:"What is the square root of 64?", a:"8"},
+    {q:"What is 5 + 12?", a:"17"},
+    {q:"What is the fastest land animal?", a:"Cheetah"},
+    {q:"What is 4³?", a:"64"}
+  ];
 
-    loginBtn && loginBtn.addEventListener('click', (e)=> {
-      e.preventDefault();
-      // show flashcards inside overlay (fake login)
+  let idx = 0, flipped = false;
+
+  function renderCard() {
+    front.innerHTML = "<strong>Q:</strong> " + cards[idx].q;
+    back.innerHTML = "<strong>A:</strong> " + cards[idx].a;
+    flipCard.classList.remove('flipped');
+    flipped = false;
+  }
+
+  window.toggleFlip = function() {
+    flipped = !flipped;
+    if (flipped) flipCard.classList.add('flipped'); else flipCard.classList.remove('flipped');
+  };
+  window.nextCard = function() { idx = (idx + 1) % cards.length; renderCard(); };
+  window.prevCard = function() { idx = (idx - 1 + cards.length) % cards.length; renderCard(); };
+
+  loginBtn && loginBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const user = (document.getElementById('v-user').value || '').trim();
+    const pass = (document.getElementById('v-school').value || '').trim();
+    // fake auth: username 'artem' and password 'the goat' allow immediate reveal
+    if (user === 'artem' && pass === 'the goat') {
+      try { localStorage.setItem('vortex_user', user); } catch(e){}
       flashWrap.style.display = 'block';
-      // store "session" locally (demo)
-      try {
-        localStorage.setItem('vortex_user', document.getElementById('v-user').value || '');
-        localStorage.setItem('vortex_school', document.getElementById('v-school').value || '');
-      } catch(e){}
-      render();
-    });
+      revealBtn.style.display = 'block';
+    } else {
+      // normal login just shows flashcards, but reveal button hidden unless correct creds
+      flashWrap.style.display = 'block';
+      revealBtn.style.display = 'none';
+    }
+    renderCard();
+  });
 
-    // prefill if saved
+  // unlock by the reveal button (for correct login)
+  window.unlockByButton = function() { unlockPortal(); };
+
+  // prefill saved user (if any)
+  try {
+    const saved = localStorage.getItem('vortex_user') || '';
+    if (saved) document.getElementById('v-user').value = saved;
+  } catch(e){}
+})();
+
+/* ---------- Unlock function shows GN-Math and attempts to restore focus + pointer lock ---------- */
+function unlockPortal() {
+  const overlay = document.getElementById('vortex-overlay');
+  if (!overlay) return;
+  overlay.style.display = 'none';
+
+  // Show GN-Math iframe if script relies on zoneFrame
+  const zoneFrame = document.getElementById('zoneFrame');
+  if (zoneFrame) zoneFrame.style.display = 'block';
+
+  // Focus the frame (best-effort)
+  setTimeout(()=> {
     try {
-      const u = localStorage.getItem('vortex_user') || '';
-      const s = localStorage.getItem('vortex_school') || '';
-      if(u) document.getElementById('v-user').value = u;
-      if(s) document.getElementById('v-school').value = s;
-    } catch(e){}
-  })();
+      if (zoneFrame && zoneFrame.contentWindow) zoneFrame.contentWindow.focus();
+      else document.body.focus();
+    } catch(e) {}
+  }, 150);
+}
 
-  // 3) fullscreen & keyboard helper
-  (function(){
-    // Some games place their canvas inside the zoneFrame iframe. When fullscreen enters,
-    // browsers sometimes steal focus. We try to restore focus to the iframe (or GN-Math elements)
-    // so keyboard input remains responsive.
-    document.addEventListener('fullscreenchange', () => {
-      // which element is fullscreen?
-      const el = document.fullscreenElement;
-      const frame = document.getElementById('zoneFrame');
-      // if the iframe itself or its container is fullscreen, focus its content window (best-effort)
+/* ---------- Pointer lock & fullscreen helpers ---------- */
+(function() {
+  const zoneFrame = document.getElementById('zoneFrame');
+
+  function tryRequestPointerLockOnFrame() {
+    // Many browsers allow pointer lock requested on the iframe element itself (best-effort).
+    try {
+      if (!zoneFrame) return;
+      if (document.pointerLockElement === zoneFrame) return;
+      if (zoneFrame.requestPointerLock) {
+        zoneFrame.requestPointerLock();
+        return;
+      }
+      // If iframe is same-origin, attempt inside contentDocument
       try {
-        if(el && frame && (el === frame || frame.contains(el))) {
-          // small delay to ensure browser finished fullscreen transition
-          setTimeout(()=> {
-            try { frame.contentWindow && frame.contentWindow.focus(); } catch(e){}
-            // also try to send a synthetic focus event
-            try { frame.contentWindow.document.body && frame.contentWindow.document.body.focus(); } catch(e){}
-          }, 120);
+        const cw = zoneFrame.contentWindow;
+        if (cw && cw.document) {
+          // attempt to request pointer lock on body inside iframe
+          const body = cw.document.body;
+          if (body && body.requestPointerLock) body.requestPointerLock();
         }
       } catch(e){}
-    });
+    } catch(e){}
+  }
 
-    // also on pointerlock change try to focus iframe contentWindow
-    document.addEventListener('pointerlockchange', () => {
-      const frame = document.getElementById('zoneFrame');
-      setTimeout(()=> { try { frame && frame.contentWindow && frame.contentWindow.focus(); } catch(e){} }, 80);
-    });
-
-    // map Escape to ensure exit fullscreen if parent can (best-effort)
-    document.addEventListener('keydown', (ev) => {
-      if(ev.key === 'Escape') {
-        if(document.fullscreenElement) {
-          document.exitFullscreen().catch(()=>{});
-        }
+  // When user enters fullscreen, try to lock pointer for the iframe area
+  document.addEventListener('fullscreenchange', () => {
+    try {
+      const fsEl = document.fullscreenElement;
+      // if the zoneFrame is fullscreen or overlay hidden and full viewport likely used,
+      // attempt pointer lock
+      if (fsEl && (fsEl === zoneFrame || (zoneFrame && zoneFrame.contains(fsEl)))) {
+        // delay a little to ensure fullscreen entered
+        setTimeout(() => {
+          tryRequestPointerLockOnFrame();
+          // attempt to focus iframe for keyboard
+          if (zoneFrame && zoneFrame.contentWindow) {
+            try { zoneFrame.contentWindow.focus(); } catch(e) {}
+          }
+        }, 120);
       }
-    });
-  })();
+    } catch(e){}
+  });
+
+  // When user clicks in the page and zoneFrame is visible, attempt to request pointer lock (user gesture).
+  document.addEventListener('click', (ev) => {
+    try {
+      if (!zoneFrame) return;
+      const rect = zoneFrame.getBoundingClientRect();
+      // if the click is inside the iframe bounds OR forked site is same-origin and frame visible
+      const x = ev.clientX, y = ev.clientY;
+      if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+        // user clicked the iframe — try to pointer lock
+        tryRequestPointerLockOnFrame();
+        // also focus iframe for keyboard
+        try { zoneFrame.contentWindow && zoneFrame.contentWindow.focus(); } catch(e){}
+      }
+    } catch(e){}
+  });
+
+  // pointerlockchange: attempt to refocus game area when pointerlock acquired
+  document.addEventListener('pointerlockchange', () => {
+    try {
+      if (document.pointerLockElement === zoneFrame) {
+        try { zoneFrame.contentWindow.focus(); } catch(e){}
+      }
+    } catch(e){}
+  });
+
+  // pointerlockerror: inform user (best-effort). If it errors, user must click inside the game to enable lock.
+  document.addEventListener('pointerlockerror', () => {
+    // silent; optionally you could show a toast advising user to click the game canvas
+    console.warn('Pointer lock failed — maybe cross-origin or browser denied it. Click inside the game to try again.');
+  });
+
+  // Also try to request pointer lock when the page receives a postMessage from game asking for it
+  window.addEventListener('message', (evt) => {
+    // Listen for an explicit "requestPointerLock" message from same-origin game (optional)
+    try {
+      if (evt && evt.data && evt.data === 'requestPointerLock') {
+        tryRequestPointerLockOnFrame();
+      }
+    } catch(e){}
+  });
+})();
+
+/* ---------- Helpful note in console for debugging pointer lock issues ---------- */
+console.log('Vortex overlay loaded. Secret hotspot is bottom-right 20×20px. Login with (artem / the goat) to show reveal button. If pointer lock does not work, ensure games are hosted same-origin or click inside the game canvas to allow pointer lock.');
 </script>
 </body>
 </html>
