@@ -1,272 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Vertex Education Portal</title>
-  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/6/6b/School_icon.png">
+  <meta charset="UTF-8" />
+  <title>Vertex Education</title>
   <style>
-    /* page reset */
-    html,body { height:100%; margin:0; padding:0; font-family:Arial,Helvetica,sans-serif; overflow:hidden; }
-
-    /* Fullscreen school overlay (cover) */
-    #school-cover {
-      position:fixed;
-      inset:0;
-      background: linear-gradient(180deg,#f7fbff,#eef4fb);
-      color:#222;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      z-index:9999;
-      overflow:auto;
+    body,html {
+      margin:0;padding:0;height:100%;width:100%;
+      font-family:sans-serif;background:#f5f5f5;color:#333;
     }
-    .school-header {
-      width:100%;
-      background:#0b3d91;
-      color:#fff;
-      padding:14px 20px;
-      display:flex;
-      align-items:center;
-      gap:12px;
-      box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    #cover {
+      position:fixed;top:0;left:0;width:100%;height:100%;
+      background:white;z-index:9999;display:flex;
+      flex-direction:column;align-items:center;justify-content:center;
     }
-    .school-logo { width:54px; height:54px; object-fit:contain; border-radius:6px; background:#fff; padding:6px; }
-    .school-title { font-size:20px; font-weight:700; letter-spacing:0.2px; }
-    .school-sub { font-size:13px; color:#d6e6ff; }
-
-    /* main cover area */
-    .cover-body { width:100%; max-width:1100px; margin:22px auto; display:flex; gap:28px; padding:0 20px; box-sizing:border-box; }
-    .left-panel {
-      flex:1;
-      background:#fff;
-      border-radius:10px;
-      padding:22px;
-      box-shadow:0 6px 20px rgba(12,40,80,0.06);
+    .login-box {
+      background:#fff;padding:20px;border-radius:8px;
+      box-shadow:0 0 10px rgba(0,0,0,0.2);width:300px;text-align:center;
     }
-    .right-panel {
-      width:360px;
-      background:#fff;
-      border-radius:10px;
-      padding:18px;
-      box-shadow:0 6px 20px rgba(12,40,80,0.06);
-      display:flex;
-      flex-direction:column;
-      gap:12px;
+    input,button {
+      width:100%;padding:10px;margin:5px 0;border:1px solid #ccc;
+      border-radius:5px;
     }
-
-    /* login box */
-    .login-title { font-size:18px; font-weight:700; margin-bottom:8px; }
-    .login-input { width:100%; padding:10px 12px; margin:8px 0; border:1px solid #e3e7ee; border-radius:6px; font-size:14px; box-sizing:border-box; }
-    .login-btn { margin-top:8px; width:100%; padding:10px 12px; background:#0b61d1; color:#fff; border:none; border-radius:6px; font-weight:600; cursor:pointer; }
-    .login-btn:hover { background:#0955b8; }
-
-    /* fake dashboard cards */
-    .cards { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; }
+    #flashcards {display:none;padding:20px;text-align:center;}
     .card {
-      width:220px;
-      height:120px;
-      background:linear-gradient(180deg,#fff,#fbfdff);
-      border-radius:10px;
-      padding:12px;
-      box-shadow:0 4px 12px rgba(10,30,70,0.06);
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:flex-start;
-      gap:6px;
+      width:300px;height:200px;margin:20px auto;
+      perspective:1000px;cursor:pointer;
     }
-    .card img { width:48px; height:48px; object-fit:cover; border-radius:6px; }
-    .card h4 { margin:0; font-size:15px; }
-    .card p { margin:0; font-size:12px; color:#555; }
-
-    /* footer look */
-    .cover-footer { width:100%; text-align:center; padding:14px 8px; color:#5b6b80; font-size:13px; background:transparent; }
-
-    /* small invisible hotspot in bottom-right (NOT visible) */
-    #secret-hotspot {
-      position:fixed;
-      width:20px;
-      height:20px;
-      right:6px;
-      bottom:6px;
-      z-index:10000;
-      opacity:0;          /* completely invisible */
-      pointer-events:auto;/* it will receive clicks */
-      cursor:default;     /* don't hint it's clickable */
+    .inner {
+      width:100%;height:100%;transition:transform 0.6s;
+      transform-style:preserve-3d;position:relative;
     }
-
-    /* iframe (real site) */
-    #real-site {
-      position:fixed;
-      inset:0;
-      border:0;
-      width:100%;
-      height:100%;
-      display:none; /* revealed when unlocked */
+    .flipped {transform:rotateY(180deg);}
+    .front,.back {
+      position:absolute;width:100%;height:100%;backface-visibility:hidden;
+      background:#fff;border:1px solid #ccc;border-radius:8px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:18px;padding:10px;
     }
-
-    @media (max-width:1000px) {
-      .cover-body { flex-direction:column; align-items:center; padding:18px; }
-      .right-panel { width:100%; max-width:420px; }
-      .card { width:100%; }
+    .back {transform:rotateY(180deg);}
+    .controls button {margin:5px;}
+    iframe {
+      width:100%;height:100%;border:none;display:none;
     }
   </style>
 </head>
 <body>
-
-  <!-- School overlay: visible by default -->
-  <div id="school-cover" aria-hidden="false">
-    <div class="school-header">
-      <img class="school-logo" src="https://upload.wikimedia.org/wikipedia/commons/6/6b/School_icon.png" alt="School logo">
-      <div>
-        <div class="school-title">Vertex Education</div>
-        <div class="school-sub">Student Portal — Quizzes · Flashcards · Progress</div>
-      </div>
-      <div style="flex:1"></div>
-      <div style="color:#cfe0ff; font-size:13px; padding-right:8px;">powered by Vertex</div>
+  <!-- Fake school cover -->
+  <div id="cover">
+    <div class="login-box">
+      <h2>Vertex Education Login</h2>
+      <input type="text" placeholder="School Email">
+      <input type="password" placeholder="Password">
+      <button onclick="showFlashcards()">Login</button>
     </div>
-
-    <div class="cover-body">
-      <div class="left-panel">
-        <h2 style="margin-top:0">Study Tools</h2>
-        <p style="color:#475569; margin-top:6px; line-height:1.45">
-          Interactive flashcards and short quizzes help students review and retain concepts quickly.
-          This portal provides practice sets, progress tracking, and printable revision sheets.
-        </p>
-
-        <div class="cards" aria-hidden="true">
-          <div class="card">
-            <div style="display:flex; gap:10px; align-items:center;">
-              <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="flashcards">
-              <div>
-                <h4>Flashcards — Algebra I</h4>
-                <p>100 cards · 5 min sessions</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <div style="display:flex; gap:10px; align-items:center;">
-              <img src="https://cdn-icons-png.flaticon.com/512/747/747310.png" alt="quiz">
-              <div>
-                <h4>Quiz — Fractions</h4>
-                <p>10 Q · timed practice</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <div style="display:flex; gap:10px; align-items:center;">
-              <img src="https://cdn-icons-png.flaticon.com/512/337/337946.png" alt="progress">
-              <div>
-                <h4>Progress Tracker</h4>
-                <p>Weekly performance & streaks</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <p style="margin-top:14px; color:#556270; font-size:14px;">
-          Example flashcard:
-        </p>
-        <div style="background:#fff; border:1px solid #e6eef9; padding:12px; width:fit-content; border-radius:8px;">
-          <strong>Q:</strong> What is 7 × 8?<br>
-          <strong>A:</strong> 56
-        </div>
-      </div>
-
-      <aside class="right-panel" aria-hidden="true">
-        <div style="margin-bottom:8px;">
-          <div class="login-title">Student Login</div>
-          <input class="login-input" id="username" placeholder="Student name or email">
-          <input class="login-input" id="schoolname" placeholder="School name">
-          <button class="login-btn" onclick="fakeLogin()">Login</button>
-        </div>
-
-        <div style="margin-top:8px;">
-          <h4 style="margin:0 0 8px 0">Quick Links</h4>
-          <ul style="padding-left:18px; color:#495466; margin:0;">
-            <li>Classroom announcements</li>
-            <li>Homework planner</li>
-            <li>Library resources</li>
-          </ul>
-        </div>
-      </aside>
-    </div>
-
-    <div class="cover-footer">Vertex Education • Confidential school portal (for demo only)</div>
-
-    <!-- Invisible hotspot for the secret click (tiny and transparent) -->
-    <div id="secret-hotspot" title="" aria-hidden="true"></div>
+    <small id="hiddenTrigger" style="margin-top:20px;color:#aaa;cursor:pointer;">Need help?</small>
   </div>
 
-  <!-- GN-Math real site iframe (kept untouched) -->
-  <iframe id="real-site" src="https://gn-math.github.io/" allow="fullscreen; geolocation; microphone; camera; joystick; encrypted-media; keyboard; pointer-lock" sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-modals"></iframe>
+  <!-- Flashcards -->
+  <div id="flashcards">
+    <h2>Math Flashcards</h2>
+    <div class="card" onclick="flipCard()">
+      <div class="inner" id="cardInner">
+        <div class="front" id="q">Question</div>
+        <div class="back" id="a">Answer</div>
+      </div>
+    </div>
+    <div class="controls">
+      <button onclick="prevCard()">Prev</button>
+      <button onclick="nextCard()">Next</button>
+    </div>
+  </div>
 
-  <script>
-    // ---------- SECRET UNLOCK: 5 clicks in 2 seconds on the invisible hotspot ----------
-    (function() {
-      const hotspot = document.getElementById('secret-hotspot');
-      let timestamps = [];
+  <!-- GN Math actual site hidden behind -->
+  <iframe id="gnSite" src="https://gn-math.github.io/"></iframe>
 
-      hotspot.addEventListener('click', () => {
-        const t = Date.now();
-        timestamps.push(t);
-        // keep only last 5
-        if (timestamps.length > 5) timestamps.shift();
-        // if we have 5 and within 2000ms -> unlock
-        if (timestamps.length === 5 && (t - timestamps[0]) <= 2000) {
-          // reveal real site and hide overlay
-          document.getElementById('school-cover').style.display = 'none';
-          document.getElementById('real-site').style.display = 'block';
-          // focus iframe (helpful for keyboard)
-          try { document.getElementById('real-site').contentWindow.focus(); } catch(e){}
-        }
-      });
+<script>
+let clickTimes = [];
+document.getElementById("hiddenTrigger").addEventListener("click",()=>{
+  const now=Date.now();
+  clickTimes=clickTimes.filter(t=>now-t<2000);
+  clickTimes.push(now);
+  if(clickTimes.length>=5){
+    document.getElementById("cover").style.display="none";
+    document.getElementById("gnSite").style.display="block";
+  }
+});
 
-      // Prevent accidental pointer cursor
-      hotspot.style.cursor = 'default';
-    })();
+// Flashcards
+const cards=[
+  {q:"What is 5+7?",a:"12"},
+  {q:"Square root of 81?",a:"9"},
+  {q:"Capital of France?",a:"Paris"},
+];
+let index=0;
+function showFlashcards(){
+  document.querySelector(".login-box").style.display="none";
+  document.getElementById("flashcards").style.display="block";
+  loadCard();
+}
+function loadCard(){
+  document.getElementById("cardInner").classList.remove("flipped");
+  document.getElementById("q").innerText=cards[index].q;
+  document.getElementById("a").innerText=cards[index].a;
+}
+function flipCard(){
+  document.getElementById("cardInner").classList.toggle("flipped");
+}
+function nextCard(){index=(index+1)%cards.length;loadCard();}
+function prevCard(){index=(index-1+cards.length)%cards.length;loadCard();}
 
-    // ---------- Fake login that doesn't actually authenticate (stores locally) ----------
-    function fakeLogin(){
-      const user = document.getElementById('username').value.trim();
-      const school = document.getElementById('schoolname').value.trim();
-      if(user) {
-        try {
-          localStorage.setItem('vertex_user', user);
-          localStorage.setItem('vertex_school', school || '');
-        } catch(e){}
-        // show a small confirmation (non-destructive)
-        alert('Logged in as ' + user + ' (demo account)');
-      } else {
-        alert('Enter a name or email (this is a demo login).');
-      }
-    }
-
-    // ---------- Fullscreen/keyboard helper ----------
-    // When the iframe is visible and a game requests fullscreen, browsers handle most events.
-    // We ensure the iframe has proper allow & sandbox attributes above. We also add an Escape listener
-    // so fullscreen can be exited from the parent if needed.
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        if (document.fullscreenElement) {
-          // attempt to exit fullscreen
-          document.exitFullscreen().catch(()=>{});
-        }
-      }
-    });
-
-    // Accessibility: if user has saved a name, populate fields
-    (function loadSaved(){
-      try {
-        const u = localStorage.getItem('vertex_user') || '';
-        const s = localStorage.getItem('vertex_school') || '';
-        if(u) document.getElementById('username').value = u;
-        if(s) document.getElementById('schoolname').value = s;
-      } catch(e){}
-    })();
-  </script>
+// Fullscreen with keyboard + pointer lock
+function requestFullscreen(el){
+  if(el.requestFullscreen) el.requestFullscreen();
+  else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  else if(el.msRequestFullscreen) el.msRequestFullscreen();
+}
+function lockPointer(el){
+  el.requestPointerLock=el.requestPointerLock||el.mozRequestPointerLock;
+  if(el.requestPointerLock) el.requestPointerLock();
+}
+document.addEventListener("fullscreenchange",()=>{
+  const iframe=document.getElementById("gnSite");
+  if(document.fullscreenElement===iframe){
+    iframe.focus();
+    lockPointer(iframe);
+  }
+});
+</script>
 </body>
 </html>
