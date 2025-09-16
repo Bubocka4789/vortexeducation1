@@ -1,46 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
+<head>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
     <link rel="apple-touch-icon" href="/favicon.png">
-    <script>
-        window.addEventListener('beforeunload', function (event) {
-            event.preventDefault();
-            event.returnValue = '';
-            return 'Are you sure you want to leave? Any unsaved changes will be lost.';
-        });
-    </script>
-    <script async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5521219086088837" crossorigin="anonymous"></script>
-    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-WX5VS54ZDW"></script>
-    <meta name="google-adsense-account" content="ca-pub-5521219086088837">
-    <script>
-        window.dataLayer = window.dataLayer || [];
-
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
-        gtag('config', 'G-WX5VS54ZDW');
-    </script>
-    <script async src="https://fundingchoicesmessages.google.com/i/pub-5521219086088837?ers=1"></script><script>(function() {function signalGooglefcPresent() {if (!window.frames['googlefcPresent']) {if (document.body) {const iframe = document.createElement('iframe'); iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;'; iframe.style.display = 'none'; iframe.name = 'googlefcPresent'; document.body.appendChild(iframe);} else {setTimeout(signalGooglefcPresent, 0);}}}signalGooglefcPresent();})();</script>
-    <script src="https://cdn.jsdelivr.net/gh/gn-math/gn-math.github.io@main/gnmath.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>gn-math</title>
-    <meta name="title" content="GN-Math">
-    <meta name="description" content="Play unbl*cked games like Crazy Cattle 3D and DriveMad on GN-Math. Fast, free, no downloads—perfect for school or home.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://gn-math.github.io/">
-    <meta property="og:title" content="GN-Math">
-    <meta property="og:description" content="Play unbl*cked games like Crazy Cattle 3D and DriveMad on GN-Math. Fast, free, no downloads—perfect for school or home.">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://gn-math.github.io/">
-    <meta name="twitter:title" content="GN-Math">
-    <meta name="twitter:description" content="Play unbl*cked games like Crazy Cattle 3D and DriveMad on GN-Math. Fast, free, no downloads—perfect for school or home.">
-    <link rel="stylesheet" href="style.css">
+    <title>Vertex Education Portal</title>
+    <style>
+        /* School portal styles */
+        body { margin:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f5f6fa; color:#333; overflow-x:hidden; }
+        header { background:#2c3e50; color:#fff; padding:20px; display:flex; align-items:center; justify-content:space-between; }
+        header img { height:50px; }
+        header h1 { margin:0; font-size:1.8rem; }
+        nav { background:#34495e; display:flex; justify-content:center; gap:20px; padding:12px; }
+        nav a { color:#fff; text-decoration:none; font-weight:500; }
+        nav a:hover { text-decoration:underline; }
+        main { max-width:1000px; margin:auto; padding:20px; }
+        section { margin-bottom:30px; }
+        #tiny { position:fixed; bottom:2px; right:2px; font-size:4px; color:#333; }
+        /* GN-Math content hidden initially */
+        #gnmath-content { display:none; width:100%; height:100vh; }
+        /* Responsive adjustments */
+        @media(max-width:600px){
+            nav { flex-direction:column; gap:10px; }
+            header { flex-direction:column; gap:10px; text-align:center; }
+            #gnmath-content { height:100vh; }
+        }
+    </style>
 </head>
-<body class="dark-mode">
+<body>
+
+<!-- School portal -->
+<header>
+    <img src="https://via.placeholder.com/50" alt="School Logo">
+    <h1>Vertex Education Portal</h1>
+</header>
+
+<nav>
+    <a href="#">Home</a>
+    <a href="#">Homework</a>
+    <a href="#">Announcements</a>
+    <a href="#">Clubs</a>
+    <a href="#">Resources</a>
+</nav>
+
+<main>
+    <section id="school-content">
+        <h2>Welcome Students!</h2>
+        <p>Access your lessons, homework, and school announcements here. Explore everything Vertex Education has to offer.</p>
+    </section>
+</main>
+
+<footer>
+    &copy; 2025 Vertex Education
+</footer>
+
+<div id="tiny">Artem</div>
+
+<!-- GN-Math game content -->
+<div id="gnmath-content">
+    <!-- Keep the original GN-Math HTML here -->
     <header>
         <div class="header-content">
             <div class="logo">gn-math</div>
@@ -57,15 +77,6 @@
             </div>
         </div>
     </header>
-    <ins class="adsbygoogle"
-    style="display:block; text-align:center;"
-    data-ad-client="ca-pub-5521219086088837"
-    data-ad-slot="5549138288"
-    data-ad-format="auto"
-    data-full-width-responsive="true"></ins>
-   <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-   </script>
 
     <main>
         <details id="featuredZonesWrapper" open>
@@ -95,44 +106,24 @@
         </div>
         <iframe id="zoneFrame"></iframe>
     </div>
+</div>
 
-    <div id="popupOverlay">
-        <div class="popup">
-            <div class="popup-header">
-                <h3 id="popupTitle">Title</h3>
-                <button id="popupClose" onclick="closePopup()">×</button>
-            </div>
-            <div id="popupBody">
-                Content will be here
-            </div>
-        </div>
-    </div>
+<script src="https://cdn.jsdelivr.net/gh/gn-math/gn-math.github.io@main/gnmath.js"></script>
 
-    <ins class="adsbygoogle"
-    style="display:block; text-align:center;"
-    data-ad-client="ca-pub-5521219086088837"
-    data-ad-slot="5549138288"
-    data-ad-format="auto"
-    data-full-width-responsive="true"></ins>
-   <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-   </script>
-    <footer>
-        <div class="footer-links">
-            <a href="#" onclick="showContact(); return false;">Contact</a>
-            <a href="#" onclick="loadPrivacy(); return false;">Privacy Policy</a>
-            <a href="javascript:saveData()">Export Data</a>
-            <a href="#" onclick="document.getElementById('importData').click(); return false;">Import Data</a>
-            <input type="file" id="importData" style="display: none;" onchange="loadData(event)">
-        </div>
-    </footer>
-    <script src="script.js"></script>
-    <script>
-        const search = new URLSearchParams(window.location.search);
-        const privacy = search.get('privacy');
-        if (privacy) {
-            loadPrivacy();
-        }
-    </script>
+<script>
+// Hidden click detection for showing GN-Math
+let clicks = [];
+document.addEventListener('click', () => {
+    const now = Date.now();
+    clicks.push(now);
+    if (clicks.length > 5) clicks.shift();
+    if (clicks.length === 5 && now - clicks[0] < 2000) {
+        // Show GN-Math content and hide school portal
+        document.getElementById('school-content').style.display = 'none';
+        document.getElementById('gnmath-content').style.display = 'block';
+    }
+});
+</script>
+
 </body>
 </html>
