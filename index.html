@@ -701,7 +701,8 @@
         </div>
         <iframe id="zoneFrame" 
                 allow="fullscreen; autoplay; encrypted-media; keyboard; pointer-lock; gamepad; clipboard-read; clipboard-write" 
-                sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-modals allow-pointer-lock allow-fullscreen"></iframe>
+                sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-modals allow-pointer-lock allow-fullscreen"
+                style="width: 100%; height: 100%; border: 0; display: block;"></iframe>
     </div>
 
     <div id="popupOverlay">
@@ -1178,39 +1179,47 @@
                 });
             }
             
-            // Enhanced escape key handling - MUST hold to exit fullscreen
+            // Enhanced escape key handling - MUST hold to exit fullscreen (only when in fullscreen/pointer lock)
             let escapeKeyTimer = null;
             let escapeHoldDuration = 0;
             const ESCAPE_HOLD_TIME = 1500; // Hold for 1.5 seconds
             
             document.addEventListener('keydown', (ev) => {
                 if (ev.key === 'Escape') {
-                    ev.preventDefault(); // Prevent default escape behavior
-                    
-                    if (!escapeKeyTimer) {
-                        escapeHoldDuration = 0;
-                        escapeKeyTimer = setInterval(() => {
-                            escapeHoldDuration += 50;
-                            if (escapeHoldDuration >= ESCAPE_HOLD_TIME) {
-                                // Exit fullscreen only after holding escape for full duration
-                                if (document.fullscreenElement) {
-                                    document.exitFullscreen().catch(() => {});
+                    // Only prevent default and require hold if we're actually in fullscreen or pointer lock
+                    if (document.fullscreenElement || document.pointerLockElement) {
+                        ev.preventDefault();
+                        ev.stopPropagation();
+                        
+                        if (!escapeKeyTimer) {
+                            escapeHoldDuration = 0;
+                            console.log('Hold Escape to exit fullscreen...');
+                            escapeKeyTimer = setInterval(() => {
+                                escapeHoldDuration += 50;
+                                if (escapeHoldDuration >= ESCAPE_HOLD_TIME) {
+                                    console.log('Exiting fullscreen/pointer lock');
+                                    // Exit fullscreen only after holding escape for full duration
+                                    if (document.fullscreenElement) {
+                                        document.exitFullscreen().catch(() => {});
+                                    }
+                                    if (document.pointerLockElement) {
+                                        document.exitPointerLock();
+                                    }
+                                    clearInterval(escapeKeyTimer);
+                                    escapeKeyTimer = null;
+                                    escapeHoldDuration = 0;
                                 }
-                                if (document.pointerLockElement) {
-                                    document.exitPointerLock();
-                                }
-                                clearInterval(escapeKeyTimer);
-                                escapeKeyTimer = null;
-                                escapeHoldDuration = 0;
-                            }
-                        }, 50);
+                            }, 50);
+                        }
                     }
+                    // If not in fullscreen/pointer lock, allow normal escape behavior
                 }
             });
             
             document.addEventListener('keyup', (ev) => {
                 if (ev.key === 'Escape' && escapeKeyTimer) {
                     // If they release escape before the full hold time, cancel the exit
+                    console.log('Escape released early, staying in fullscreen');
                     clearInterval(escapeKeyTimer);
                     escapeKeyTimer = null;
                     escapeHoldDuration = 0;
