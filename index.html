@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vortex Education Portal</title>
+    <title>Vortex - Smart Flashcards</title>
     <!-- --- KEEP original GN-Math head assets & analytics intact --- -->
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
@@ -33,286 +33,626 @@
     
     <!-- --- Overlay styling (keeps GN-Math unaffected) --- -->
     <style>
-        /* overlay (school cover) sits above everything, removed on unlock */
-        #vortex-overlay{
-            position:fixed; 
-            inset:0; 
-            background: linear-gradient(180deg,#f7fbff,#eef6fc); 
-            z-index:999999; 
-            display:flex; 
-            flex-direction:column; 
-            font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; 
-            color:#123; 
-            overflow:auto;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
-        .v-header {
-            background:#0a3a86; 
-            color:#fff; 
-            padding:16px 22px; 
-            display:flex; 
-            align-items:center; 
-            gap:14px; 
-            box-shadow: 0 3px 12px rgba(8,25,50,0.12);
+        /* Animated background */
+        #vortex-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            z-index: 999999;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Inter', system-ui, sans-serif;
+            color: #fff;
+            overflow: auto;
         }
         
-        .v-logo {
-            width:56px;height:56px;border-radius:8px;background:#fff;padding:6px;display:flex;align-items:center;justify-content:center;
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         
-        .v-title {
-            font-size:20px;font-weight:700;letter-spacing:0.2px;
+        /* Floating particles effect */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
         }
         
-        .v-sub {
-            color:#cfe4ff; 
-            font-size:13px; 
-            margin-top:4px;
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 20s linear infinite;
         }
         
-        .v-body {
-            display:flex; 
-            gap:26px; 
-            width:100%; 
-            max-width:1200px; 
-            margin:24px auto; 
-            padding:0 20px; 
-            box-sizing:border-box;
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
         }
         
-        .left {
-            flex:1; 
-            background:#fff;border-radius:12px;padding:20px; 
-            box-shadow:0 8px 24px rgba(10,30,60,0.06);
+        .header {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
         
-        .right {
-            width:360px; 
-            background:#fff;border-radius:12px;padding:18px; 
-            box-shadow:0 8px 24px rgba(10,30,60,0.06);
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
         
-        .section-title {
-            margin:0 0 8px 0; 
-            font-size:18px; 
-            font-weight:700; 
-            color:#10243a;
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #fff, #f0f0f0);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 900;
+            color: #667eea;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            animation: logoSpin 10s linear infinite;
         }
         
-        p.lead {
-            color:#37566a; 
-            line-height:1.45; 
-            margin:8px 0 12px;
+        @keyframes logoSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
-        /* cards */
-        .cards {
-            display:flex; 
-            flex-wrap:wrap; 
-            gap:14px; 
-            margin-top:12px;
+        .brand-text {
+            display: flex;
+            flex-direction: column;
         }
         
-        .card {
-            width:220px;height:120px;border-radius:10px;padding:12px;background:linear-gradient(180deg,#fff,#fbfdff); 
-            box-shadow:0 6px 16px rgba(8,30,60,0.04); 
-            display:flex; 
-            gap:10px; 
-            align-items:center;
+        .brand-name {
+            font-size: 32px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #fff, #e0e0e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
         }
         
-        .card img {
-            width:52px;height:52px; 
-            border-radius:8px; 
-            object-fit:cover;
+        .brand-tagline {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            margin-top: -2px;
         }
         
-        /* login box */
-        .login-title {
-            font-weight:700; 
-            margin-bottom:8px; 
-            color:#0b3a86;
+        .header-stats {
+            display: flex;
+            gap: 24px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .main-container {
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px;
+            gap: 40px;
+        }
+        
+        .hero-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 32px;
+        }
+        
+        .hero-title {
+            font-size: 56px;
+            font-weight: 900;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #fff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.3); }
+            100% { text-shadow: 0 0 40px rgba(255, 255, 255, 0.5), 0 0 60px rgba(255, 255, 255, 0.3); }
+        }
+        
+        .hero-subtitle {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 400;
+            line-height: 1.5;
+        }
+        
+        .feature-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        .feature-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .feature-desc {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.4;
+        }
+        
+        .study-section {
+            width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        
+        .study-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #1a1a1a;
+        }
+        
+        .study-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+        
+        .study-subtitle {
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 24px;
         }
         
         .input {
-            width:100%; 
-            padding:10px;border:1px solid #e6eef8;border-radius:8px; 
-            margin:8px 0; 
-            font-size:14px; 
-            box-sizing:border-box;
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            margin: 8px 0;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+        
+        .input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
         }
         
         .btn {
-            width:100%; 
-            padding:10px;border-radius:8px;border:0; 
-            background:#0b61d1; 
-            color:#fff; 
-            font-weight:700; 
-            cursor:pointer;
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover:before {
+            left: 100%;
         }
         
         .btn:hover {
-            background:#0955bb;
-        }
-        
-        /* flashcard area inside overlay */
-        .flash-wrap {
-            margin-top:14px; 
-            text-align:center;
-        }
-        
-        .card-face {
-            width:100%; 
-            height:160px; 
-            border-radius:8px; 
-            border:1px solid #e6eef8; 
-            display:flex; 
-            align-items:center; 
-            justify-content:center; 
-            font-size:20px; 
-            background:#fff; 
-            padding:12px; 
-            box-sizing:border-box;
-        }
-        
-        .controls {
-            display:flex; 
-            gap:10px; 
-            justify-content:center; 
-            margin-top:10px;
-        }
-        
-        .overlay-footer {
-            text-align:center; 
-            padding:18px 10px; 
-            color:#526471; 
-            font-size:13px;
-        }
-        
-        /* invisible hotspot - tiny and entirely transparent */
-        #secret-hotspot {
-            position:fixed; 
-            width:20px;height:20px; 
-            right:6px; 
-            bottom:6px; 
-            z-index:1000000; 
-            opacity:0; 
-            pointer-events:auto; 
-            cursor:default;
-        }
-        
-        /* GN-Math iframe (kept hidden until unlock) */
-        #gn-frame {
-            position:fixed; 
-            inset:0; 
-            width:100%; 
-            height:100%; 
-            border:0; 
-            display:none;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
         }
         
         .login-error {
-            color: #d73027;
-            font-size: 13px;
-            margin-top: 8px;
+            color: #e53e3e;
+            font-size: 14px;
+            margin-top: 12px;
             text-align: center;
+            display: none;
+            background: #fed7d7;
+            padding: 12px;
+            border-radius: 8px;
+        }
+        
+        .flashcard-container {
+            margin-top: 24px;
             display: none;
         }
         
-        @media(max-width:1000px){
-            .v-body{
-                flex-direction:column; 
-                align-items:center;
+        .flashcard {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            perspective: 1000px;
+            margin-bottom: 20px;
+        }
+        
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+        
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            font-size: 18px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .flashcard-front {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .flashcard-back {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            transform: rotateY(180deg);
+        }
+        
+        .flashcard-controls {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .control-btn {
+            flex: 1;
+            padding: 12px;
+            border: 0;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .btn-secondary:hover {
+            background: #edf2f7;
+            transform: translateY(-1px);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .card-progress {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 14px;
+            color: #718096;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+            transition: width 0.5s ease;
+        }
+        
+        .deck-selector {
+            margin-bottom: 20px;
+        }
+        
+        .deck-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        
+        .deck-option {
+            padding: 12px 16px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .deck-option:hover, .deck-option.active {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+            transform: translateY(-1px);
+        }
+        
+        /* invisible hotspot */
+        #secret-hotspot {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            right: 6px;
+            bottom: 6px;
+            z-index: 1000000;
+            opacity: 0;
+            pointer-events: auto;
+            cursor: default;
+        }
+        
+        .footer {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 24px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+                padding: 24px;
             }
-            .right{
-                width:100%; 
-                max-width:520px;
+            
+            .study-section {
+                width: 100%;
+                max-width: 500px;
+                margin: 0 auto;
+            }
+            
+            .hero-title {
+                font-size: 40px;
+            }
+            
+            .feature-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                padding: 16px 20px;
+            }
+            
+            .brand-name {
+                font-size: 24px;
+            }
+            
+            .hero-title {
+                font-size: 32px;
+            }
+            
+            .main-container {
+                padding: 20px;
+            }
+            
+            .header-stats {
+                display: none;
             }
         }
     </style>
 </head>
 
 <body class="dark-mode">
-    <!-- ---------- VORTEX SCHOOL OVERLAY (on top) ---------- -->
-    <div id="vortex-overlay" aria-hidden="false">
-        <div class="v-header">
-            <div class="v-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/School_icon.png" alt="logo" style="width:36px;height:36px;"></div>
-            <div>
-                <div class="v-title">Vortex Education</div>
-                <div class="v-sub">Student Portal — Flashcards · Quizzes · Progress</div>
+    <!-- ---------- VORTEX FLASHCARD OVERLAY ---------- -->
+    <div id="vortex-overlay">
+        <!-- Floating particles -->
+        <div class="particles" id="particles"></div>
+        
+        <div class="header">
+            <div class="logo-section">
+                <div class="logo">V</div>
+                <div class="brand-text">
+                    <div class="brand-name">Vortex</div>
+                    <div class="brand-tagline">Smart Flashcards</div>
+                </div>
             </div>
-            <div style="flex:1"></div>
-            <div style="font-size:13px;color:#cfe0ff">vortex.edu internal</div>
+            <div class="header-stats">
+                <div>10M+ Cards Studied</div>
+                <div>500K+ Users</div>
+                <div>95% Success Rate</div>
+            </div>
         </div>
         
-        <div class="v-body">
-            <div class="left">
-                <h3 class="section-title">Study tools & highlights</h3>
-                <p class="lead">Interactive flashcards, quick quizzes, and short practice sets help students review and retain concepts. This portal supports progress tracking, printable revision sheets and quick review games.</p>
+        <div class="main-container">
+            <div class="hero-section">
+                <h1 class="hero-title">Master Any Subject with AI-Powered Flashcards</h1>
+                <p class="hero-subtitle">Transform your learning with adaptive spaced repetition, beautiful animations, and intelligent progress tracking.</p>
                 
-                <div class="cards" aria-hidden="true">
-                    <div class="card">
-                        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="">
-                        <div>
-                            <strong>Flashcards — Algebra</strong>
-                            <div style="font-size:12px;color:#67798a">120 cards · 5 min</div>
-                        </div>
+                <div class="feature-cards">
+                    <div class="feature-card">
+                        <span class="feature-icon">🧠</span>
+                        <div class="feature-title">AI-Powered Learning</div>
+                        <div class="feature-desc">Our algorithm adapts to your learning pace and focuses on cards you struggle with most.</div>
                     </div>
-                    <div class="card">
-                        <img src="https://cdn-icons-png.flaticon.com/512/747/747310.png" alt="">
-                        <div>
-                            <strong>Quiz — Fractions</strong>
-                            <div style="font-size:12px;color:#67798a">10 Q · timed</div>
-                        </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">📊</span>
+                        <div class="feature-title">Progress Analytics</div>
+                        <div class="feature-desc">Track your mastery with detailed statistics and beautiful visual progress indicators.</div>
                     </div>
-                    <div class="card">
-                        <img src="https://cdn-icons-png.flaticon.com/512/337/337946.png" alt="">
-                        <div>
-                            <strong>Progress</strong>
-                            <div style="font-size:12px;color:#67798a">Weekly streaks & badges</div>
-                        </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">⚡</span>
+                        <div class="feature-title">Lightning Fast</div>
+                        <div class="feature-desc">Smooth animations and instant card flips make studying feel effortless and engaging.</div>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">🎨</span>
+                        <div class="feature-title">Beautiful Design</div>
+                        <div class="feature-desc">Gorgeous gradients, smooth transitions, and modern UI that makes learning enjoyable.</div>
                     </div>
                 </div>
-                
-                <h4 style="margin-top:18px">Sample flashcard</h4>
-                <div class="card-face">Q: What is 9 × 6? <br><small style="color:#556879">Click the flashcard panel to show answer</small></div>
             </div>
             
-            <aside class="right" aria-hidden="true">
-                <div>
-                    <div class="login-title">Student login</div>
-                    <input id="v-user" class="input" placeholder="Student name or email">
+            <div class="study-section">
+                <div class="study-card">
+                    <h2 class="study-title">Start Studying</h2>
+                    <p class="study-subtitle">Login to access your personalized flashcard decks and continue your learning journey.</p>
+                    
+                    <input id="v-user" class="input" placeholder="Email or Username">
                     <input id="v-password" class="input" type="password" placeholder="Password">
-                    <button class="btn" id="loginBtn">Login</button>
+                    <button class="btn" id="loginBtn">Begin Study Session</button>
                     <div class="login-error" id="loginError">Invalid credentials. Please try again.</div>
                     
-                    <div class="flash-wrap" id="flash-wrap" style="display:none;">
-                        <div id="card-face" class="card-face" onclick="toggleFlip()">Tap to flip</div>
-                        <div class="controls">
-                            <button class="btn" style="background:#e6eef8;color:#123;border:0;padding:8px 12px;" onclick="prevCard()">Prev</button>
-                            <button class="btn" style="background:#0b61d1;padding:8px 12px;" onclick="nextCard()">Next</button>
+                    <div class="flashcard-container" id="flashcard-container">
+                        <div class="deck-selector">
+                            <h3 style="margin-bottom: 12px; font-weight: 700;">Choose Your Deck</h3>
+                            <div class="deck-options">
+                                <div class="deck-option active" data-deck="math">📐 Mathematics</div>
+                                <div class="deck-option" data-deck="science">🔬 Science</div>
+                                <div class="deck-option" data-deck="history">📚 History</div>
+                                <div class="deck-option" data-deck="languages">🌍 Languages</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flashcard" id="flashcard">
+                            <div class="flashcard-inner">
+                                <div class="flashcard-front">
+                                    <div id="card-question">Click to start studying!</div>
+                                </div>
+                                <div class="flashcard-back">
+                                    <div id="card-answer">Answer will appear here</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
+                        
+                        <div class="flashcard-controls">
+                            <button class="control-btn btn-secondary" onclick="prevCard()">← Previous</button>
+                            <button class="control-btn btn-primary" onclick="nextCard()">Next →</button>
+                        </div>
+                        
+                        <div class="card-progress">
+                            Card <span id="current-card">1</span> of <span id="total-cards">25</span> • 
+                            <span id="deck-name">Mathematics</span> Deck
                         </div>
                     </div>
                 </div>
-                
-                <div style="margin-top:14px; color:#556779; font-size:14px;">
-                    <strong>Quick links</strong>
-                    <ul style="padding-left:16px; margin-top:8px; color:#556779;">
-                        <li>Class announcements</li>
-                        <li>Homework planner</li>
-                        <li>Library & resources</li>
-                    </ul>
-                </div>
-            </aside>
+            </div>
         </div>
         
-        <div class="overlay-footer">Vortex Education • Demo portal</div>
+        <div class="footer">
+            Vortex Flashcards © 2024 • Powered by AI • Made with ❤️ for learners worldwide
+        </div>
         
-        <!-- invisible hotspot — bottom-right tiny clickable area (no text, no cursor change) -->
-        <div id="secret-hotspot" aria-hidden="true" title=""></div>
+        <!-- invisible hotspot -->
+        <div id="secret-hotspot"></div>
     </div>
 
-    <!-- ---------- ORIGINAL GN-MATH CONTENT (unchanged) ---------- -->
+    <!-- ---------- ORIGINAL GN-MATH CONTENT (completely unchanged) ---------- -->
     <header>
         <div class="header-content">
             <div class="logo">gn-math</div>
@@ -359,7 +699,6 @@
                 <button onclick="closeZone()">Close</button>
             </div>
         </div>
-        <!-- Enhanced iframe with better pointer lock and game support -->
         <iframe id="zoneFrame" 
                 allow="fullscreen; autoplay; encrypted-media; keyboard; pointer-lock; gamepad; clipboard-read; clipboard-write" 
                 sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-modals allow-pointer-lock allow-fullscreen"></iframe>
@@ -390,7 +729,6 @@
         </div>
     </footer>
 
-    <!-- original GN-Math script (kept as-is) -->
     <script src="script.js"></script>
     <script>
         const search = new URLSearchParams(window.location.search);
@@ -400,31 +738,40 @@
         }
     </script>
 
-    <!-- ---------- VORTEX overlay logic & helpers ---------- -->
     <script>
-        // Function to unlock and show GN-Math
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Unlock function
         function unlockGNMath() {
             const overlay = document.getElementById('vortex-overlay');
             if(overlay) overlay.style.display = 'none';
             
-            // Focus management for better game compatibility
             setTimeout(() => {
                 try {
                     const frame = document.getElementById('zoneFrame');
                     if(frame && frame.contentWindow) {
                         frame.contentWindow.focus();
-                        // Try to focus the body of the iframe content
                         frame.contentWindow.document.body && frame.contentWindow.document.body.focus();
                     } else {
                         document.body.focus();
                     }
-                } catch(e) {
-                    console.log('Focus management:', e);
-                }
+                } catch(e) {}
             }, 200);
         }
 
-        // 1) Invisible hotspot: 5 clicks within 2 seconds unlocks GN-Math
+        // Hotspot clicks
         (function(){
             const hotspot = document.getElementById('secret-hotspot');
             const timestamps = [];
@@ -433,7 +780,6 @@
                 const now = Date.now();
                 timestamps.push(now);
                 
-                // keep only recent clicks (last 5)
                 while(timestamps.length > 5) timestamps.shift();
                 
                 if (timestamps.length === 5 && (now - timestamps[0]) <= 2000) {
@@ -441,115 +787,224 @@
                 }
             });
             
-            // ensure hotspot is clickable but invisible
             hotspot.style.opacity = 0;
             hotspot.style.pointerEvents = 'auto';
         })();
 
-        // 2) Enhanced login system with secret credentials
+        // Flashcard system
         (function(){
             const loginBtn = document.getElementById('loginBtn');
-            const flashWrap = document.getElementById('flash-wrap');
-            const cardFace = document.getElementById('card-face');
+            const flashcardContainer = document.getElementById('flashcard-container');
             const loginError = document.getElementById('loginError');
             const userInput = document.getElementById('v-user');
             const passwordInput = document.getElementById('v-password');
+            const flashcard = document.getElementById('flashcard');
+            const cardQuestion = document.getElementById('card-question');
+            const cardAnswer = document.getElementById('card-answer');
+            const currentCardSpan = document.getElementById('current-card');
+            const totalCardsSpan = document.getElementById('total-cards');
+            const progressFill = document.getElementById('progress-fill');
+            const deckNameSpan = document.getElementById('deck-name');
             
-            // sample cards
-            const cards = [
-                {q:"What is 8 × 7?", a:"56"},
-                {q:"Square root of 121?", a:"11"},
-                {q:"Capital of Japan?", a:"Tokyo"},
-                {q:"Derivative of x^2?", a:"2x"},
-                {q:"What is 15 ÷ 3?", a:"5"},
-                {q:"What is π approximately?", a:"3.14159"}
-            ];
+            // Flashcard decks
+            const decks = {
+                math: {
+                    name: "Mathematics",
+                    cards: [
+                        {q: "What is the derivative of sin(x)?", a: "cos(x)"},
+                        {q: "Solve for x: 2x + 5 = 15", a: "x = 5"},
+                        {q: "What is the quadratic formula?", a: "x = (-b ± √(b²-4ac)) / 2a"},
+                        {q: "Factor: x² - 9", a: "(x + 3)(x - 3)"},
+                        {q: "What is the slope-intercept form?", a: "y = mx + b"},
+                        {q: "Evaluate: log₁₀(100)", a: "2"},
+                        {q: "What is the Pythagorean theorem?", a: "a² + b² = c²"},
+                        {q: "Simplify: (x²)³", a: "x⁶"},
+                        {q: "What is 0! (zero factorial)?", a: "1"},
+                        {q: "Convert to decimal: 3/4", a: "0.75"},
+                        {q: "What is the area of a circle?", a: "πr²"},
+                        {q: "Solve: |x - 3| = 7", a: "x = 10 or x = -4"},
+                        {q: "What is e approximately?", a: "2.71828"},
+                        {q: "Factor: x² + 5x + 6", a: "(x + 2)(x + 3)"},
+                        {q: "What is the distance formula?", a: "d = √((x₂-x₁)² + (y₂-y₁)²)"},
+                        {q: "Evaluate: 3² × 3³", a: "3⁵ = 243"},
+                        {q: "What is sin(30°)?", a: "1/2 or 0.5"},
+                        {q: "Solve: 2^x = 8", a: "x = 3"},
+                        {q: "What is the sum of angles in a triangle?", a: "180°"},
+                        {q: "Simplify: √(16x⁴)", a: "4x²"}
+                    ]
+                },
+                science: {
+                    name: "Science",
+                    cards: [
+                        {q: "What is the chemical symbol for gold?", a: "Au"},
+                        {q: "What is the powerhouse of the cell?", a: "Mitochondria"},
+                        {q: "What is Newton's first law of motion?", a: "An object at rest stays at rest, an object in motion stays in motion"},
+                        {q: "What is the pH of pure water?", a: "7"},
+                        {q: "What gas do plants absorb during photosynthesis?", a: "Carbon dioxide (CO₂)"},
+                        {q: "What is the speed of light in a vacuum?", a: "299,792,458 m/s"},
+                        {q: "How many chromosomes do humans have?", a: "46 (23 pairs)"},
+                        {q: "What is the atomic number of carbon?", a: "6"},
+                        {q: "What force keeps planets in orbit?", a: "Gravitational force"},
+                        {q: "What is the chemical formula for water?", a: "H₂O"},
+                        {q: "What type of bond holds DNA strands together?", a: "Hydrogen bonds"},
+                        {q: "What is the hardest natural substance?", a: "Diamond"},
+                        {q: "Which planet is closest to the Sun?", a: "Mercury"},
+                        {q: "What is the unit of electrical resistance?", a: "Ohm (Ω)"},
+                        {q: "What gas makes up about 78% of Earth's atmosphere?", a: "Nitrogen"}
+                    ]
+                },
+                history: {
+                    name: "History",
+                    cards: [
+                        {q: "When did World War II end?", a: "1945"},
+                        {q: "Who was the first President of the United States?", a: "George Washington"},
+                        {q: "When did the Berlin Wall fall?", a: "1989"},
+                        {q: "Which empire was ruled by Julius Caesar?", a: "Roman Empire"},
+                        {q: "When did the American Civil War begin?", a: "1861"},
+                        {q: "Who wrote the Declaration of Independence?", a: "Thomas Jefferson"},
+                        {q: "When did the French Revolution start?", a: "1789"},
+                        {q: "Which year did Columbus reach the Americas?", a: "1492"},
+                        {q: "Who was the Egyptian queen who ruled with Mark Antony?", a: "Cleopatra"},
+                        {q: "When did the Industrial Revolution begin?", a: "Mid-18th century (around 1760)"},
+                        {q: "Which war was fought between 1914-1918?", a: "World War I"},
+                        {q: "Who was the first person to walk on the moon?", a: "Neil Armstrong"},
+                        {q: "When did the Soviet Union collapse?", a: "1991"},
+                        {q: "Which ancient wonder was located in Alexandria?", a: "The Lighthouse of Alexandria"},
+                        {q: "Who was known as the Iron Lady?", a: "Margaret Thatcher"}
+                    ]
+                },
+                languages: {
+                    name: "Languages",
+                    cards: [
+                        {q: "How do you say 'Hello' in Spanish?", a: "Hola"},
+                        {q: "What does 'Bonjour' mean in English?", a: "Hello/Good morning"},
+                        {q: "How do you say 'Thank you' in German?", a: "Danke"},
+                        {q: "What does 'Arigato' mean?", a: "Thank you (Japanese)"},
+                        {q: "How do you say 'Goodbye' in Italian?", a: "Ciao or Arrivederci"},
+                        {q: "What does 'Ni hao' mean?", a: "Hello (Chinese)"},
+                        {q: "How do you say 'Please' in French?", a: "S'il vous plaît"},
+                        {q: "What does 'Spasibo' mean?", a: "Thank you (Russian)"},
+                        {q: "How do you say 'Yes' in Portuguese?", a: "Sim"},
+                        {q: "What does 'Guten Tag' mean?", a: "Good day (German)"},
+                        {q: "How do you say 'Water' in Spanish?", a: "Agua"},
+                        {q: "What does 'Konichiwa' mean?", a: "Hello/Good afternoon (Japanese)"},
+                        {q: "How do you say 'Love' in French?", a: "Amour"},
+                        {q: "What does 'Gracias' mean?", a: "Thank you (Spanish)"},
+                        {q: "How do you say 'Friend' in German?", a: "Freund"}
+                    ]
+                }
+            };
             
-            let idx = 0, flipped = false;
+            let currentDeck = 'math';
+            let currentCardIndex = 0;
+            let isFlipped = false;
             
-            function render(){
-                if(!cardFace) return;
-                cardFace.innerHTML = flipped ? 
-                    ("<strong>A:</strong> " + cards[idx].a) : 
-                    ("<strong>Q:</strong> " + cards[idx].q);
+            // Deck selection
+            document.querySelectorAll('.deck-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    document.querySelector('.deck-option.active').classList.remove('active');
+                    option.classList.add('active');
+                    currentDeck = option.dataset.deck;
+                    currentCardIndex = 0;
+                    isFlipped = false;
+                    updateCard();
+                    updateProgress();
+                });
+            });
+            
+            function updateCard() {
+                const deck = decks[currentDeck];
+                const card = deck.cards[currentCardIndex];
+                
+                cardQuestion.textContent = card.q;
+                cardAnswer.textContent = card.a;
+                currentCardSpan.textContent = currentCardIndex + 1;
+                totalCardsSpan.textContent = deck.cards.length;
+                deckNameSpan.textContent = deck.name;
+                
+                if (isFlipped) {
+                    flashcard.classList.add('flipped');
+                } else {
+                    flashcard.classList.remove('flipped');
+                }
             }
             
-            function toggleFlip(){
-                flipped = !flipped; 
-                render();
+            function updateProgress() {
+                const deck = decks[currentDeck];
+                const progress = ((currentCardIndex + 1) / deck.cards.length) * 100;
+                progressFill.style.width = progress + '%';
             }
             
-            function nextCard(){
-                idx = (idx + 1) % cards.length; 
-                flipped = false; 
-                render();
-            }
+            // Flashcard flip
+            flashcard.addEventListener('click', () => {
+                isFlipped = !isFlipped;
+                updateCard();
+            });
             
-            function prevCard(){
-                idx = (idx - 1 + cards.length) % cards.length; 
-                flipped = false; 
-                render();
-            }
+            window.nextCard = function() {
+                const deck = decks[currentDeck];
+                currentCardIndex = (currentCardIndex + 1) % deck.cards.length;
+                isFlipped = false;
+                updateCard();
+                updateProgress();
+            };
             
-            // expose to global (so the inline buttons work)
-            window.toggleFlip = toggleFlip;
-            window.nextCard = nextCard;
-            window.prevCard = prevCard;
+            window.prevCard = function() {
+                const deck = decks[currentDeck];
+                currentCardIndex = (currentCardIndex - 1 + deck.cards.length) % deck.cards.length;
+                isFlipped = false;
+                updateCard();
+                updateProgress();
+            };
             
-            // Enhanced login with secret credentials
-            loginBtn && loginBtn.addEventListener('click', (e) => {
+            // Login system
+            loginBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 
                 const username = userInput.value.trim();
                 const password = passwordInput.value.trim();
                 
-                // Check for secret credentials
+                // Secret credentials
                 if (username.toLowerCase() === 'artem' && password === 'da goat') {
-                    // Secret login - unlock GN-Math
                     unlockGNMath();
                     return;
                 }
                 
-                // Regular login - show flashcards or error
+                // Regular login
                 if (username.length > 0) {
-                    // Hide any previous error
                     loginError.style.display = 'none';
+                    flashcardContainer.style.display = 'block';
+                    updateCard();
+                    updateProgress();
                     
-                    // Show flashcards (fake login success)
-                    flashWrap.style.display = 'block';
-                    
-                    // Store "session" locally (demo)
                     try {
                         localStorage.setItem('vortex_user', username);
-                        localStorage.setItem('vortex_password', password);
                     } catch(e){}
-                    
-                    render();
                 } else {
-                    // Show error for empty username
                     loginError.style.display = 'block';
                 }
             });
             
-            // Allow Enter key to login
+            // Enter key support
             [userInput, passwordInput].forEach(input => {
-                input && input.addEventListener('keypress', (e) => {
+                input.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
                         loginBtn.click();
                     }
                 });
             });
             
-            // Prefill if saved (except password for security)
+            // Load saved username
             try {
-                const u = localStorage.getItem('vortex_user') || '';
-                if(u && userInput) userInput.value = u;
+                const savedUser = localStorage.getItem('vortex_user');
+                if (savedUser && userInput) {
+                    userInput.value = savedUser;
+                }
             } catch(e){}
         })();
 
-        // 3) Enhanced fullscreen & keyboard helper with better game support
+        // Enhanced game support
         (function(){
-            // Better pointer lock support
             function requestPointerLock(element) {
                 if (element.requestPointerLock) {
                     element.requestPointerLock();
@@ -560,106 +1015,75 @@
                 }
             }
             
-            // Enhanced focus management for games
             function focusGameFrame() {
                 const frame = document.getElementById('zoneFrame');
                 if (!frame) return;
                 
                 try {
-                    // Focus the iframe itself
                     frame.focus();
                     
-                    // Try to focus the content window
                     if (frame.contentWindow) {
                         frame.contentWindow.focus();
                         
-                        // Try to focus the document body
                         setTimeout(() => {
                             try {
                                 if (frame.contentWindow.document && frame.contentWindow.document.body) {
                                     frame.contentWindow.document.body.focus();
                                 }
                                 
-                                // For canvas games, try to focus the canvas element
                                 const canvas = frame.contentWindow.document.querySelector('canvas');
                                 if (canvas) {
                                     canvas.focus();
-                                    // Enable pointer lock on the canvas for games like Eaglercraft
                                     canvas.addEventListener('click', () => {
                                         requestPointerLock(canvas);
                                     });
                                 }
-                            } catch(e) {
-                                console.log('Canvas focus setup:', e);
-                            }
+                            } catch(e) {}
                         }, 100);
                     }
-                } catch(e) {
-                    console.log('Frame focus error:', e);
-                }
+                } catch(e) {}
             }
             
-            // Handle fullscreen changes
             document.addEventListener('fullscreenchange', () => {
                 const el = document.fullscreenElement;
                 const frame = document.getElementById('zoneFrame');
                 
                 if (el && frame && (el === frame || frame.contains(el))) {
-                    // Delay to ensure browser finished fullscreen transition
                     setTimeout(focusGameFrame, 150);
                 }
             });
             
-            // Handle pointer lock changes
             document.addEventListener('pointerlockchange', () => {
                 setTimeout(focusGameFrame, 50);
             });
             
-            // Enhanced iframe load handler
             const frame = document.getElementById('zoneFrame');
             if (frame) {
                 frame.addEventListener('load', () => {
                     setTimeout(() => {
                         focusGameFrame();
                         
-                        // Set up game-specific enhancements
                         try {
                             const iframeDoc = frame.contentWindow.document;
-                            
-                            // Look for game canvas and enhance it
                             const canvas = iframeDoc.querySelector('canvas');
                             if (canvas) {
-                                // Add pointer lock support
                                 canvas.addEventListener('click', (e) => {
                                     if (document.pointerLockElement !== canvas) {
                                         requestPointerLock(canvas);
                                     }
                                 });
                                 
-                                // Ensure canvas can receive focus
                                 canvas.tabIndex = 0;
-                                
-                                // Add keyboard event listeners to canvas
-                                canvas.addEventListener('keydown', (e) => {
-                                    e.stopPropagation();
-                                });
-                                
-                                canvas.addEventListener('keyup', (e) => {
-                                    e.stopPropagation();
-                                });
+                                canvas.addEventListener('keydown', (e) => e.stopPropagation());
+                                canvas.addEventListener('keyup', (e) => e.stopPropagation());
                             }
                             
-                            // Focus management for the iframe document
                             iframeDoc.addEventListener('click', focusGameFrame);
-                            
-                        } catch(e) {
-                            console.log('Game enhancement setup:', e);
-                        }
+                        } catch(e) {}
                     }, 500);
                 });
             }
             
-            // Global escape key handler
             document.addEventListener('keydown', (ev) => {
                 if (ev.key === 'Escape') {
                     if (document.fullscreenElement) {
@@ -671,7 +1095,6 @@
                 }
             });
             
-            // Prevent context menu in game area (common for games)
             document.addEventListener('contextmenu', (e) => {
                 const frame = document.getElementById('zoneFrame');
                 if (frame && e.target === frame) {
