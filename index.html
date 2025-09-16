@@ -1,161 +1,272 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Vertex Education</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vertex Education Portal</title>
+  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/6/6b/School_icon.png">
   <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: Arial, sans-serif;
-    }
+    /* page reset */
+    html,body { height:100%; margin:0; padding:0; font-family:Arial,Helvetica,sans-serif; overflow:hidden; }
 
-    /* School cover */
+    /* Fullscreen school overlay (cover) */
     #school-cover {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: #f9f9f9;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
+      position:fixed;
+      inset:0;
+      background: linear-gradient(180deg,#f7fbff,#eef4fb);
+      color:#222;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      z-index:9999;
+      overflow:auto;
+    }
+    .school-header {
+      width:100%;
+      background:#0b3d91;
+      color:#fff;
+      padding:14px 20px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    }
+    .school-logo { width:54px; height:54px; object-fit:contain; border-radius:6px; background:#fff; padding:6px; }
+    .school-title { font-size:20px; font-weight:700; letter-spacing:0.2px; }
+    .school-sub { font-size:13px; color:#d6e6ff; }
+
+    /* main cover area */
+    .cover-body { width:100%; max-width:1100px; margin:22px auto; display:flex; gap:28px; padding:0 20px; box-sizing:border-box; }
+    .left-panel {
+      flex:1;
+      background:#fff;
+      border-radius:10px;
+      padding:22px;
+      box-shadow:0 6px 20px rgba(12,40,80,0.06);
+    }
+    .right-panel {
+      width:360px;
+      background:#fff;
+      border-radius:10px;
+      padding:18px;
+      box-shadow:0 6px 20px rgba(12,40,80,0.06);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
     }
 
-    #login-box {
-      background: #fff;
-      border: 1px solid #ddd;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      text-align: center;
-      max-width: 300px;
-    }
+    /* login box */
+    .login-title { font-size:18px; font-weight:700; margin-bottom:8px; }
+    .login-input { width:100%; padding:10px 12px; margin:8px 0; border:1px solid #e3e7ee; border-radius:6px; font-size:14px; box-sizing:border-box; }
+    .login-btn { margin-top:8px; width:100%; padding:10px 12px; background:#0b61d1; color:#fff; border:none; border-radius:6px; font-weight:600; cursor:pointer; }
+    .login-btn:hover { background:#0955b8; }
 
-    #login-box h2 {
-      margin-bottom: 20px;
-      color: #333;
-    }
-
-    input {
-      width: 90%;
-      padding: 8px;
-      margin: 8px 0;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
-    button {
-      margin-top: 10px;
-      padding: 10px 20px;
-      background: #4285f4;
-      border: none;
-      border-radius: 4px;
-      color: white;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #3367d6;
-    }
-
-    #dashboard {
-      display: none;
-      text-align: center;
-    }
-
+    /* fake dashboard cards */
+    .cards { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; }
     .card {
-      display: inline-block;
-      width: 200px;
-      height: 120px;
-      margin: 10px;
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      padding: 20px;
-      text-align: center;
-      vertical-align: top;
+      width:220px;
+      height:120px;
+      background:linear-gradient(180deg,#fff,#fbfdff);
+      border-radius:10px;
+      padding:12px;
+      box-shadow:0 4px 12px rgba(10,30,70,0.06);
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:flex-start;
+      gap:6px;
+    }
+    .card img { width:48px; height:48px; object-fit:cover; border-radius:6px; }
+    .card h4 { margin:0; font-size:15px; }
+    .card p { margin:0; font-size:12px; color:#555; }
+
+    /* footer look */
+    .cover-footer { width:100%; text-align:center; padding:14px 8px; color:#5b6b80; font-size:13px; background:transparent; }
+
+    /* small invisible hotspot in bottom-right (NOT visible) */
+    #secret-hotspot {
+      position:fixed;
+      width:20px;
+      height:20px;
+      right:6px;
+      bottom:6px;
+      z-index:10000;
+      opacity:0;          /* completely invisible */
+      pointer-events:auto;/* it will receive clicks */
+      cursor:default;     /* don't hint it's clickable */
     }
 
-    .card img {
-      max-width: 100%;
-      height: 60px;
-      object-fit: contain;
-      margin-bottom: 10px;
-    }
-
-    /* Hidden game site */
+    /* iframe (real site) */
     #real-site {
-      width: 100%;
-      height: 100%;
-      border: none;
+      position:fixed;
+      inset:0;
+      border:0;
+      width:100%;
+      height:100%;
+      display:none; /* revealed when unlocked */
+    }
+
+    @media (max-width:1000px) {
+      .cover-body { flex-direction:column; align-items:center; padding:18px; }
+      .right-panel { width:100%; max-width:420px; }
+      .card { width:100%; }
     }
   </style>
 </head>
 <body>
-  <!-- Fake school cover -->
-  <div id="school-cover">
-    <div id="login-box">
-      <h2>Vertex Education</h2>
-      <input type="text" placeholder="Username"><br>
-      <input type="text" placeholder="School Name"><br>
-      <button onclick="showDashboard()">Login</button>
+
+  <!-- School overlay: visible by default -->
+  <div id="school-cover" aria-hidden="false">
+    <div class="school-header">
+      <img class="school-logo" src="https://upload.wikimedia.org/wikipedia/commons/6/6b/School_icon.png" alt="School logo">
+      <div>
+        <div class="school-title">Vertex Education</div>
+        <div class="school-sub">Student Portal — Quizzes · Flashcards · Progress</div>
+      </div>
+      <div style="flex:1"></div>
+      <div style="color:#cfe0ff; font-size:13px; padding-right:8px;">powered by Vertex</div>
     </div>
-    <div id="dashboard">
-      <h2>Welcome to Vertex Education</h2>
-      <div class="card">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Book-icon-bible.png/600px-Book-icon-bible.png" alt="Flashcards">
-        <p>Flashcards</p>
+
+    <div class="cover-body">
+      <div class="left-panel">
+        <h2 style="margin-top:0">Study Tools</h2>
+        <p style="color:#475569; margin-top:6px; line-height:1.45">
+          Interactive flashcards and short quizzes help students review and retain concepts quickly.
+          This portal provides practice sets, progress tracking, and printable revision sheets.
+        </p>
+
+        <div class="cards" aria-hidden="true">
+          <div class="card">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="flashcards">
+              <div>
+                <h4>Flashcards — Algebra I</h4>
+                <p>100 cards · 5 min sessions</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <img src="https://cdn-icons-png.flaticon.com/512/747/747310.png" alt="quiz">
+              <div>
+                <h4>Quiz — Fractions</h4>
+                <p>10 Q · timed practice</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <img src="https://cdn-icons-png.flaticon.com/512/337/337946.png" alt="progress">
+              <div>
+                <h4>Progress Tracker</h4>
+                <p>Weekly performance & streaks</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p style="margin-top:14px; color:#556270; font-size:14px;">
+          Example flashcard:
+        </p>
+        <div style="background:#fff; border:1px solid #e6eef9; padding:12px; width:fit-content; border-radius:8px;">
+          <strong>Q:</strong> What is 7 × 8?<br>
+          <strong>A:</strong> 56
+        </div>
       </div>
-      <div class="card">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Quiz_icon.svg/1024px-Quiz_icon.svg.png" alt="Quiz">
-        <p>Quizzes</p>
-      </div>
-      <div class="card">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3f/Icon_math.png" alt="Math Practice">
-        <p>Math Practice</p>
-      </div>
+
+      <aside class="right-panel" aria-hidden="true">
+        <div style="margin-bottom:8px;">
+          <div class="login-title">Student Login</div>
+          <input class="login-input" id="username" placeholder="Student name or email">
+          <input class="login-input" id="schoolname" placeholder="School name">
+          <button class="login-btn" onclick="fakeLogin()">Login</button>
+        </div>
+
+        <div style="margin-top:8px;">
+          <h4 style="margin:0 0 8px 0">Quick Links</h4>
+          <ul style="padding-left:18px; color:#495466; margin:0;">
+            <li>Classroom announcements</li>
+            <li>Homework planner</li>
+            <li>Library resources</li>
+          </ul>
+        </div>
+      </aside>
     </div>
+
+    <div class="cover-footer">Vertex Education • Confidential school portal (for demo only)</div>
+
+    <!-- Invisible hotspot for the secret click (tiny and transparent) -->
+    <div id="secret-hotspot" title="" aria-hidden="true"></div>
   </div>
 
-  <!-- Hidden real site -->
-  <iframe id="real-site" src="https://gn-math.github.io/"></iframe>
+  <!-- GN-Math real site iframe (kept untouched) -->
+  <iframe id="real-site" src="https://gn-math.github.io/" allow="fullscreen; geolocation; microphone; camera; joystick; encrypted-media; keyboard; pointer-lock" sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-modals"></iframe>
 
   <script>
-    // Show fake dashboard after login
-    function showDashboard() {
-      document.getElementById("login-box").style.display = "none";
-      document.getElementById("dashboard").style.display = "block";
+    // ---------- SECRET UNLOCK: 5 clicks in 2 seconds on the invisible hotspot ----------
+    (function() {
+      const hotspot = document.getElementById('secret-hotspot');
+      let timestamps = [];
+
+      hotspot.addEventListener('click', () => {
+        const t = Date.now();
+        timestamps.push(t);
+        // keep only last 5
+        if (timestamps.length > 5) timestamps.shift();
+        // if we have 5 and within 2000ms -> unlock
+        if (timestamps.length === 5 && (t - timestamps[0]) <= 2000) {
+          // reveal real site and hide overlay
+          document.getElementById('school-cover').style.display = 'none';
+          document.getElementById('real-site').style.display = 'block';
+          // focus iframe (helpful for keyboard)
+          try { document.getElementById('real-site').contentWindow.focus(); } catch(e){}
+        }
+      });
+
+      // Prevent accidental pointer cursor
+      hotspot.style.cursor = 'default';
+    })();
+
+    // ---------- Fake login that doesn't actually authenticate (stores locally) ----------
+    function fakeLogin(){
+      const user = document.getElementById('username').value.trim();
+      const school = document.getElementById('schoolname').value.trim();
+      if(user) {
+        try {
+          localStorage.setItem('vertex_user', user);
+          localStorage.setItem('vertex_school', school || '');
+        } catch(e){}
+        // show a small confirmation (non-destructive)
+        alert('Logged in as ' + user + ' (demo account)');
+      } else {
+        alert('Enter a name or email (this is a demo login).');
+      }
     }
 
-    // Unlock after 5 clicks in 2s
-    let clicks = [];
-    document.getElementById("school-cover").addEventListener("click", () => {
-      const now = Date.now();
-      clicks.push(now);
-      clicks = clicks.filter(t => now - t < 2000);
-      if (clicks.length >= 5) {
-        document.getElementById("school-cover").style.display = "none";
-      }
-    });
-
-    // Fix fullscreen + keyboard input
-    document.addEventListener("keydown", e => {
-      if (e.key === "Escape") {
+    // ---------- Fullscreen/keyboard helper ----------
+    // When the iframe is visible and a game requests fullscreen, browsers handle most events.
+    // We ensure the iframe has proper allow & sandbox attributes above. We also add an Escape listener
+    // so fullscreen can be exited from the parent if needed.
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
         if (document.fullscreenElement) {
-          document.exitFullscreen();
+          // attempt to exit fullscreen
+          document.exitFullscreen().catch(()=>{});
         }
       }
     });
 
-    document.addEventListener("dblclick", () => {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-      }
-    });
+    // Accessibility: if user has saved a name, populate fields
+    (function loadSaved(){
+      try {
+        const u = localStorage.getItem('vertex_user') || '';
+        const s = localStorage.getItem('vertex_school') || '';
+        if(u) document.getElementById('username').value = u;
+        if(s) document.getElementById('schoolname').value = s;
+      } catch(e){}
+    })();
   </script>
 </body>
 </html>
