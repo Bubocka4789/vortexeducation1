@@ -1034,14 +1034,44 @@
                                 const canvas = frame.contentWindow.document.querySelector('canvas');
                                 if (canvas) {
                                     canvas.focus();
-                                    canvas.addEventListener('click', () => {
-                                        requestPointerLock(canvas);
-                                    });
+                                    
+                                    // Enhanced pointer lock for Eaglercraft
+                                    canvas.addEventListener('click', (e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        if (document.pointerLockElement !== canvas) {
+                                            requestPointerLock(canvas);
+                                        }
+                                    }, { passive: false });
+                                    
+                                    // Prevent mouse events from bubbling up
+                                    canvas.addEventListener('mousedown', (e) => e.stopPropagation(), true);
+                                    canvas.addEventListener('mouseup', (e) => e.stopPropagation(), true);
+                                    canvas.addEventListener('mousemove', (e) => e.stopPropagation(), true);
+                                    canvas.addEventListener('wheel', (e) => e.stopPropagation(), true);
+                                    
+                                    // Enhanced keyboard handling to prevent conflicts
+                                    canvas.addEventListener('keydown', (e) => {
+                                        // Don't stop escape key propagation for exit functionality
+                                        if (e.key !== 'Escape') {
+                                            e.stopPropagation();
+                                        }
+                                    }, true);
+                                    
+                                    canvas.addEventListener('keyup', (e) => {
+                                        if (e.key !== 'Escape') {
+                                            e.stopPropagation();
+                                        }
+                                    }, true);
                                 }
-                            } catch(e) {}
+                            } catch(e) {
+                                console.log('Canvas enhancement error:', e);
+                            }
                         }, 100);
                     }
-                } catch(e) {}
+                } catch(e) {
+                    console.log('Frame focus error:', e);
+                }
             }
             
             document.addEventListener('fullscreenchange', () => {
@@ -1059,6 +1089,9 @@
             
             const frame = document.getElementById('zoneFrame');
             if (frame) {
+                // Enhanced iframe mouse handling
+                frame.style.pointerEvents = 'auto';
+                
                 frame.addEventListener('load', () => {
                     setTimeout(() => {
                         focusGameFrame();
@@ -1066,32 +1099,128 @@
                         try {
                             const iframeDoc = frame.contentWindow.document;
                             const canvas = iframeDoc.querySelector('canvas');
+                            
                             if (canvas) {
-                                canvas.addEventListener('click', (e) => {
-                                    if (document.pointerLockElement !== canvas) {
-                                        requestPointerLock(canvas);
+                                // Prevent parent page interference with game mouse
+                                frame.addEventListener('mouseenter', () => {
+                                    frame.style.pointerEvents = 'all';
+                                });
+                                
+                                frame.addEventListener('mouseleave', () => {
+                                    // Only reset pointer events if not in pointer lock
+                                    if (!document.pointerLockElement) {
+                                        frame.style.pointerEvents = 'auto';
                                     }
                                 });
                                 
+                                canvas.addEventListener('click', (e) => {
+                                    e.preventDefault();
+                                    e.stopImmediatePropagation();
+                                    if (document.pointerLockElement !== canvas) {
+                                        requestPointerLock(canvas);
+                                    }
+                                }, { passive: false, capture: true });
+                                
                                 canvas.tabIndex = 0;
-                                canvas.addEventListener('keydown', (e) => e.stopPropagation());
-                                canvas.addEventListener('keyup', (e) => e.stopPropagation());
+                                
+                                // Comprehensive event isolation for Eaglercraft
+                                ['mousedown', 'mouseup', 'mousemove', 'wheel', 'contextmenu'].forEach(eventType => {
+                                    canvas.addEventListener(eventType, (e) => {
+                                        e.stopPropagation();
+                                        if (eventType === 'contextmenu') {
+                                            e.preventDefault();
+                                        }
+                                    }, { passive: false, capture: true });
+                                });
+                                
+                                ['keydown', 'keyup', 'keypress'].forEach(eventType => {
+                                    canvas.addEventListener(eventType, (e) => {
+                                        if (e.key !== 'Escape') {
+                                            e.stopPropagation();
+                                        }
+                                    }, { passive: false, capture: true });
+                                });
                             }
                             
-                            iframeDoc.addEventListener('click', focusGameFrame);
-                        } catch(e) {}
+                            // Focus the iframe document when clicked
+                            iframeDoc.addEventListener('click', () => {
+                                focusGameFrame();
+                            }, { passive: true });
+                            
+                            // Prevent parent page scrolling when mouse is in game
+                            iframeDoc.addEventListener('wheel', (e) => {
+                                e.stopPropagation();
+                            }, { passive: true });
+                            
+                        } catch(e) {
+                            console.log('Game enhancement setup error:', e);
+                        }
                     }, 500);
+                });
+                
+                // Handle pointer lock changes more robustly
+                document.addEventListener('pointerlockchange', () => {
+                    if (document.pointerLockElement) {
+                        frame.style.pointerEvents = 'all';
+                    }
+                    setTimeout(focusGameFrame, 50);
+                });
+                
+                // Handle pointer lock errors
+                document.addEventListener('pointerlockerror', () => {
+                    console.log('Pointer lock failed, retrying...');
+                    setTimeout(() => {
+                        const canvas = frame.contentWindow?.document?.querySelector('canvas');
+                        if (canvas) {
+                            requestPointerLock(canvas);
+                        }
+                    }, 100);
                 });
             }
             
+            // Enhanced escape key handling - hold to exit fullscreen
+            let escapeKeyTimer = null;
+            let escapeHoldDuration = 0;
+            const ESCAPE_HOLD_TIME = 1000; // Hold for 1 second
+            
             document.addEventListener('keydown', (ev) => {
                 if (ev.key === 'Escape') {
-                    if (document.fullscreenElement) {
-                        document.exitFullscreen().catch(() => {});
+                    if (!escapeKeyTimer) {
+                        escapeHoldDuration = 0;
+                        escapeKeyTimer = setInterval(() => {
+                            escapeHoldDuration += 50;
+                            if (escapeHoldDuration >= ESCAPE_HOLD_TIME) {
+                                // Exit fullscreen after holding escape for 1 second
+                                if (document.fullscreenElement) {
+                                    document.exitFullscreen().catch(() => {});
+                                }
+                                if (document.pointerLockElement) {
+                                    document.exitPointerLock();
+                                }
+                                clearInterval(escapeKeyTimer);
+                                escapeKeyTimer = null;
+                            }
+                        }, 50);
                     }
-                    if (document.pointerLockElement) {
-                        document.exitPointerLock();
+                    
+                    // Still allow immediate exit for non-game contexts
+                    const frame = document.getElementById('zoneFrame');
+                    if (!frame || !frame.contentWindow) {
+                        if (document.fullscreenElement) {
+                            document.exitFullscreen().catch(() => {});
+                        }
+                        if (document.pointerLockElement) {
+                            document.exitPointerLock();
+                        }
                     }
+                }
+            });
+            
+            document.addEventListener('keyup', (ev) => {
+                if (ev.key === 'Escape' && escapeKeyTimer) {
+                    clearInterval(escapeKeyTimer);
+                    escapeKeyTimer = null;
+                    escapeHoldDuration = 0;
                 }
             });
             
