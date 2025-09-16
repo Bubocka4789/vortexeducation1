@@ -1178,19 +1178,21 @@
                 });
             }
             
-            // Enhanced escape key handling - hold to exit fullscreen
+            // Enhanced escape key handling - MUST hold to exit fullscreen
             let escapeKeyTimer = null;
             let escapeHoldDuration = 0;
-            const ESCAPE_HOLD_TIME = 1000; // Hold for 1 second
+            const ESCAPE_HOLD_TIME = 1500; // Hold for 1.5 seconds
             
             document.addEventListener('keydown', (ev) => {
                 if (ev.key === 'Escape') {
+                    ev.preventDefault(); // Prevent default escape behavior
+                    
                     if (!escapeKeyTimer) {
                         escapeHoldDuration = 0;
                         escapeKeyTimer = setInterval(() => {
                             escapeHoldDuration += 50;
                             if (escapeHoldDuration >= ESCAPE_HOLD_TIME) {
-                                // Exit fullscreen after holding escape for 1 second
+                                // Exit fullscreen only after holding escape for full duration
                                 if (document.fullscreenElement) {
                                     document.exitFullscreen().catch(() => {});
                                 }
@@ -1199,25 +1201,16 @@
                                 }
                                 clearInterval(escapeKeyTimer);
                                 escapeKeyTimer = null;
+                                escapeHoldDuration = 0;
                             }
                         }, 50);
-                    }
-                    
-                    // Still allow immediate exit for non-game contexts
-                    const frame = document.getElementById('zoneFrame');
-                    if (!frame || !frame.contentWindow) {
-                        if (document.fullscreenElement) {
-                            document.exitFullscreen().catch(() => {});
-                        }
-                        if (document.pointerLockElement) {
-                            document.exitPointerLock();
-                        }
                     }
                 }
             });
             
             document.addEventListener('keyup', (ev) => {
                 if (ev.key === 'Escape' && escapeKeyTimer) {
+                    // If they release escape before the full hold time, cancel the exit
                     clearInterval(escapeKeyTimer);
                     escapeKeyTimer = null;
                     escapeHoldDuration = 0;
