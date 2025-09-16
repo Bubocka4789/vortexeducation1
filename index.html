@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vertex Education Portal</title>
 <style>
-/* Make a full-screen school portal overlay */
+/* Fullscreen school overlay */
 #school-overlay {
     position: fixed;
     top: 0;
@@ -39,16 +39,13 @@
     font-weight: 500;
 }
 #school-overlay nav a:hover { text-decoration: underline; }
-#school-overlay main { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+#school-overlay main { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; text-align: center; }
 #tiny { position: fixed; bottom: 2px; right: 2px; font-size: 4px; color: #333; }
 </style>
 </head>
 <body>
 
-<!-- GN-Math website HTML starts directly in body -->
-<script src="https://cdn.jsdelivr.net/gh/gn-math/gn-math.github.io@main/gnmath.js"></script>
-
-<!-- School overlay -->
+<!-- School portal overlay -->
 <div id="school-overlay">
     <header>
         <img src="https://via.placeholder.com/50" alt="School Logo">
@@ -62,15 +59,127 @@
         <a href="#">Resources</a>
     </nav>
     <main>
-        Welcome Students! Explore lessons, homework, and announcements.
+        Welcome Students! Access your lessons, homework, and school announcements here. Explore everything Vertex Education has to offer.
     </main>
     <footer>&copy; 2025 Vertex Education</footer>
 </div>
 
 <div id="tiny">Artem</div>
 
+<!-- Original GN-Math code starts here -->
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
 <script>
-// Detect 5 clicks in 2 seconds anywhere to hide overlay
+window.addEventListener('beforeunload', function (event) {
+    event.preventDefault();
+    event.returnValue = '';
+    return 'Are you sure you want to leave? Any unsaved changes will be lost.';
+});
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5521219086088837" crossorigin="anonymous"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WX5VS54ZDW"></script>
+<meta name="google-adsense-account" content="ca-pub-5521219086088837">
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag() { dataLayer.push(arguments); }
+gtag('js', new Date());
+gtag('config', 'G-WX5VS54ZDW');
+</script>
+<script async src="https://fundingchoicesmessages.google.com/i/pub-5521219086088837?ers=1"></script>
+<script>(function() {
+    function signalGooglefcPresent() {
+        if (!window.frames['googlefcPresent']) {
+            if (document.body) {
+                const iframe = document.createElement('iframe');
+                iframe.style = 'width:0;height:0;border:none;z-index:-1000;position:absolute;left:-1000px;top:-1000px;';
+                iframe.style.display = 'none';
+                iframe.name = 'googlefcPresent';
+                document.body.appendChild(iframe);
+            } else { setTimeout(signalGooglefcPresent, 0); }
+        }
+    }
+    signalGooglefcPresent();
+})();</script>
+<script src="https://cdn.jsdelivr.net/gh/gn-math/gn-math.github.io@main/gnmath.js"></script>
+<link rel="stylesheet" href="style.css">
+
+<!-- Rest of GN-Math HTML body -->
+<header>
+  <div class="header-content">
+    <div class="logo">gn-math</div>
+    <div class="search-container">
+        <input type="text" id="searchBar" placeholder="Search zones..." oninput="filterZones()">
+        <select id="sortOptions" onchange="sortZones()">
+            <option value="name">Name</option>
+            <option value="id">ID (Date)</option>
+            <option value="popular">Popular</option>
+        </select>
+    </div>
+    <div class="control-buttons">
+        <button id="settings" style="background-color: var(--primary-color); color: white; border: none; border-radius: 4px; padding: 0.5rem 1rem; font-size: 16px; cursor: pointer;">Settings</button>
+    </div>
+  </div>
+</header>
+
+<main>
+<details id="featuredZonesWrapper" open>
+<summary id="allZonesSummary" style="font-size: 1.2rem; font-weight: bold; cursor: pointer;">Featured Zones</summary>
+<div id="featuredZones" class="zone-container"></div>
+</details>
+<br><hr><br>
+<details id="allZonesWrapper" open>
+<summary id="allSummary" style="font-size: 1.2rem; font-weight: bold; cursor: pointer;">All Zones</summary>
+<div id="container">Loading...</div>
+</details>
+</main>
+
+<div id="zoneViewer">
+<div class="zone-header">
+<div class="zone-title">
+<h2 id="zoneName">zone</h2>
+<span id="zoneId" style="display: none;"></span>
+<a id="zoneAuthor" href="#" target="_blank">by Author</a>
+</div>
+<div class="zone-controls">
+<button onclick="fullscreenZone()">Fullscreen</button>
+<button onclick="aboutBlank()">Open in New Tab</button>
+<button onclick="downloadZone()">Download</button>
+<button onclick="closeZone()">Close</button>
+</div>
+</div>
+<iframe id="zoneFrame"></iframe>
+</div>
+
+<div id="popupOverlay">
+<div class="popup">
+<div class="popup-header">
+<h3 id="popupTitle">Title</h3>
+<button id="popupClose" onclick="closePopup()">×</button>
+</div>
+<div id="popupBody"> Content will be here </div>
+</div>
+</div>
+
+<footer>
+<div class="footer-links">
+<a href="#" onclick="showContact(); return false;">Contact</a>
+<a href="#" onclick="loadPrivacy(); return false;">Privacy Policy</a>
+<a href="javascript:saveData()">Export Data</a>
+<a href="#" onclick="document.getElementById('importData').click(); return false;">Import Data</a>
+<input type="file" id="importData" style="display: none;" onchange="loadData(event)">
+</div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+const search = new URLSearchParams(window.location.search);
+const privacy = search.get('privacy');
+if (privacy) { loadPrivacy(); }
+</script>
+
+<!-- Hidden overlay click detection -->
+<script>
 let clicks = [];
 document.addEventListener('click', () => {
     const now = Date.now();
