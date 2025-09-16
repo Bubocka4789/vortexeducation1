@@ -1,195 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vertex Education Portal</title>
-<style>
-/* Fullscreen school overlay */
-#school-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #f5f6fa;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-}
-#school-overlay header, #school-overlay nav, #school-overlay main, #school-overlay footer {
-    padding: 1rem 2rem;
-}
-#school-overlay header {
-    background: #2c3e50;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-#school-overlay nav {
-    background: #34495e;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-}
-#school-overlay nav a {
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-}
-#school-overlay nav a:hover { text-decoration: underline; }
-#school-overlay main { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; text-align: center; }
-#tiny { position: fixed; bottom: 2px; right: 2px; font-size: 4px; color: #333; }
-</style>
+  <meta charset="UTF-8">
+  <title>Vertex Education</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+    }
+
+    /* School cover */
+    #school-cover {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    #login-box {
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 300px;
+    }
+
+    #login-box h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    input {
+      width: 90%;
+      padding: 8px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #4285f4;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #3367d6;
+    }
+
+    #dashboard {
+      display: none;
+      text-align: center;
+    }
+
+    .card {
+      display: inline-block;
+      width: 200px;
+      height: 120px;
+      margin: 10px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 20px;
+      text-align: center;
+      vertical-align: top;
+    }
+
+    .card img {
+      max-width: 100%;
+      height: 60px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+    /* Hidden game site */
+    #real-site {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
 </head>
 <body>
-
-<!-- School portal overlay -->
-<div id="school-overlay">
-    <header>
-        <img src="https://via.placeholder.com/50" alt="School Logo">
-        <h1>Vertex Education Portal</h1>
-    </header>
-    <nav>
-        <a href="#">Home</a>
-        <a href="#">Homework</a>
-        <a href="#">Announcements</a>
-        <a href="#">Clubs</a>
-        <a href="#">Resources</a>
-    </nav>
-    <main>
-        Welcome Students! Access your lessons, homework, and school announcements here. Explore everything Vertex Education has to offer.
-    </main>
-    <footer>&copy; 2025 Vertex Education</footer>
-</div>
-
-<div id="tiny">Artem</div>
-
-<!-- Original GN-Math code starts here -->
-<link rel="icon" type="image/png" href="favicon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
-<link rel="apple-touch-icon" href="/favicon.png">
-<script>
-window.addEventListener('beforeunload', function (event) {
-    event.preventDefault();
-    event.returnValue = '';
-    return 'Are you sure you want to leave? Any unsaved changes will be lost.';
-});
-</script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5521219086088837" crossorigin="anonymous"></script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-WX5VS54ZDW"></script>
-<meta name="google-adsense-account" content="ca-pub-5521219086088837">
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag() { dataLayer.push(arguments); }
-gtag('js', new Date());
-gtag('config', 'G-WX5VS54ZDW');
-</script>
-<script async src="https://fundingchoicesmessages.google.com/i/pub-5521219086088837?ers=1"></script>
-<script>(function() {
-    function signalGooglefcPresent() {
-        if (!window.frames['googlefcPresent']) {
-            if (document.body) {
-                const iframe = document.createElement('iframe');
-                iframe.style = 'width:0;height:0;border:none;z-index:-1000;position:absolute;left:-1000px;top:-1000px;';
-                iframe.style.display = 'none';
-                iframe.name = 'googlefcPresent';
-                document.body.appendChild(iframe);
-            } else { setTimeout(signalGooglefcPresent, 0); }
-        }
-    }
-    signalGooglefcPresent();
-})();</script>
-<script src="https://cdn.jsdelivr.net/gh/gn-math/gn-math.github.io@main/gnmath.js"></script>
-<link rel="stylesheet" href="style.css">
-
-<!-- Rest of GN-Math HTML body -->
-<header>
-  <div class="header-content">
-    <div class="logo">gn-math</div>
-    <div class="search-container">
-        <input type="text" id="searchBar" placeholder="Search zones..." oninput="filterZones()">
-        <select id="sortOptions" onchange="sortZones()">
-            <option value="name">Name</option>
-            <option value="id">ID (Date)</option>
-            <option value="popular">Popular</option>
-        </select>
+  <!-- Fake school cover -->
+  <div id="school-cover">
+    <div id="login-box">
+      <h2>Vertex Education</h2>
+      <input type="text" placeholder="Username"><br>
+      <input type="text" placeholder="School Name"><br>
+      <button onclick="showDashboard()">Login</button>
     </div>
-    <div class="control-buttons">
-        <button id="settings" style="background-color: var(--primary-color); color: white; border: none; border-radius: 4px; padding: 0.5rem 1rem; font-size: 16px; cursor: pointer;">Settings</button>
+    <div id="dashboard">
+      <h2>Welcome to Vertex Education</h2>
+      <div class="card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Book-icon-bible.png/600px-Book-icon-bible.png" alt="Flashcards">
+        <p>Flashcards</p>
+      </div>
+      <div class="card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Quiz_icon.svg/1024px-Quiz_icon.svg.png" alt="Quiz">
+        <p>Quizzes</p>
+      </div>
+      <div class="card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3f/Icon_math.png" alt="Math Practice">
+        <p>Math Practice</p>
+      </div>
     </div>
   </div>
-</header>
 
-<main>
-<details id="featuredZonesWrapper" open>
-<summary id="allZonesSummary" style="font-size: 1.2rem; font-weight: bold; cursor: pointer;">Featured Zones</summary>
-<div id="featuredZones" class="zone-container"></div>
-</details>
-<br><hr><br>
-<details id="allZonesWrapper" open>
-<summary id="allSummary" style="font-size: 1.2rem; font-weight: bold; cursor: pointer;">All Zones</summary>
-<div id="container">Loading...</div>
-</details>
-</main>
+  <!-- Hidden real site -->
+  <iframe id="real-site" src="https://gn-math.github.io/"></iframe>
 
-<div id="zoneViewer">
-<div class="zone-header">
-<div class="zone-title">
-<h2 id="zoneName">zone</h2>
-<span id="zoneId" style="display: none;"></span>
-<a id="zoneAuthor" href="#" target="_blank">by Author</a>
-</div>
-<div class="zone-controls">
-<button onclick="fullscreenZone()">Fullscreen</button>
-<button onclick="aboutBlank()">Open in New Tab</button>
-<button onclick="downloadZone()">Download</button>
-<button onclick="closeZone()">Close</button>
-</div>
-</div>
-<iframe id="zoneFrame"></iframe>
-</div>
-
-<div id="popupOverlay">
-<div class="popup">
-<div class="popup-header">
-<h3 id="popupTitle">Title</h3>
-<button id="popupClose" onclick="closePopup()">×</button>
-</div>
-<div id="popupBody"> Content will be here </div>
-</div>
-</div>
-
-<footer>
-<div class="footer-links">
-<a href="#" onclick="showContact(); return false;">Contact</a>
-<a href="#" onclick="loadPrivacy(); return false;">Privacy Policy</a>
-<a href="javascript:saveData()">Export Data</a>
-<a href="#" onclick="document.getElementById('importData').click(); return false;">Import Data</a>
-<input type="file" id="importData" style="display: none;" onchange="loadData(event)">
-</div>
-</footer>
-
-<script src="script.js"></script>
-<script>
-const search = new URLSearchParams(window.location.search);
-const privacy = search.get('privacy');
-if (privacy) { loadPrivacy(); }
-</script>
-
-<!-- Hidden overlay click detection -->
-<script>
-let clicks = [];
-document.addEventListener('click', () => {
-    const now = Date.now();
-    clicks.push(now);
-    if (clicks.length > 5) clicks.shift();
-    if (clicks.length === 5 && now - clicks[0] < 2000) {
-        document.getElementById('school-overlay').style.display = 'none';
+  <script>
+    // Show fake dashboard after login
+    function showDashboard() {
+      document.getElementById("login-box").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
     }
-});
-</script>
 
+    // Unlock after 5 clicks in 2s
+    let clicks = [];
+    document.getElementById("school-cover").addEventListener("click", () => {
+      const now = Date.now();
+      clicks.push(now);
+      clicks = clicks.filter(t => now - t < 2000);
+      if (clicks.length >= 5) {
+        document.getElementById("school-cover").style.display = "none";
+      }
+    });
+
+    // Fix fullscreen + keyboard input
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") {
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        }
+      }
+    });
+
+    document.addEventListener("dblclick", () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      }
+    });
+  </script>
 </body>
 </html>
